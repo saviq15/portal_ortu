@@ -61,20 +61,20 @@
                 @endif
 
                 {{-- Form --}}
-                <form method="POST" action="#" class="mt-8"></form>
+                <form method="POST" action="{{ route('login') }}" class="mt-8">
                     @csrf
 
                     {{-- ID Pengguna / NIP --}}
                     <div>
-                        <label for="id_pengguna" class="mb-2 block text-xs font-semibold text-slate-800">
+                        <label for="email" class="mb-2 block text-xs font-semibold text-slate-800">
                             ID Pengguna / NIP
                         </label>
                         <div class="relative">
-                            <input id="id_pengguna" name="id_pengguna" type="text"
-                                   value="{{ old('id_pengguna') }}"
+                            <input id="email" name="email" type="text"
+                                   value="{{ old('email') }}"
                                    placeholder="Masukkan ID Pengguna atau NIP"
-                                   autocomplete="username" required
-                                   class="block w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-3 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 @error('id_pengguna') border-red-400 @enderror">
+                                   autocomplete="email" required
+                                   class="block w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-3 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 @error('email') border-red-400 @enderror">
                             <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.118a7.5 7.5 0 0115 0A17.933 17.933 0 0112 21.75a17.933 17.933 0 01-7.5-1.632z"/>
