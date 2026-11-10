@@ -146,7 +146,7 @@
                 <h1 class="text-2xl tracking-tight text-slate-800">Buku Catatan Sikap &amp; Proyek P5</h1>
                 <p class="mt-2 text-sm text-slate-500">Evaluasi perkembangan karakter dan observasi dimensi Profil Pelajar Pancasila.</p>
             </div>
-
+            {{-- {{ route('penilaian-sikap') }} --}}
             {{-- Form (filter + tabel) --}}
             <form action="#" method="POST" @submit.prevent="simpan()">
                 @csrf
