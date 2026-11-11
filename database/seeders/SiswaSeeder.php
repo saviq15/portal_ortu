@@ -21,6 +21,7 @@ class SiswaSeeder extends Seeder
             'alamat' => 'Wonosobo, Central Java',
             'nama_wali' => 'Bapak Fauzi',
             'no_hp_wali' => '081234567890',
+            'status_aktif' => 'aktif',
         ]);
 
         Siswa::create([
@@ -31,6 +32,7 @@ class SiswaSeeder extends Seeder
             'alamat' => 'Kalibeber, Wonosobo',
             'nama_wali' => 'Ibu Aminah',
             'no_hp_wali' => '089876543210',
+            'status_aktif' => 'aktif',
         ]);
     }
 }

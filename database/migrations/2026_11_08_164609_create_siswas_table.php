@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->string('nama_wali')->nullable();
             $table->string('no_hp_wali', 15)->nullable();
+            $table->string('status_aktif');
             $table->timestamps();
         });
     }

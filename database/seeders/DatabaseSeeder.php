@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
             SiswaSeeder::class,
             UserSeeder::class,
             LogAktivitasSeeder::class,
+            TahunAjaranSeeder::class,
+            StafSeeder::class,
+            UnitSeeder::class,
         ]);
     }
 }

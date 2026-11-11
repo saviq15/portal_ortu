@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LaporanPerkembanganController;
 use App\Http\Controllers\LogAktivitasController;
@@ -45,8 +46,11 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Route Frontend
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
+    
+    //  SOLUSI: Gabungkan rute frontend dan backend ke Controller di sini
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Jalur rute lainnya tetap biarkan seperti ini:
     Route::get('/kelas', fn () => view('admin.kelas'))->name('kelas.view');
     Route::get('/pengguna', fn () => view('admin.pengguna'))->name('pengguna.view');
     Route::get('/tahun-ajaran', fn () => view('admin.tahun-ajaran'))->name('tahun-ajaran');
@@ -56,6 +60,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/data/pengguna', [UserController::class, 'index'])->name('pengguna.index');
     Route::get('/log-aktivitas', [LogAktivitasController::class, 'index'])->name('log-aktivitas');
 });
+
 // Route::get('/guru/dashboard', fn () => view('guru.dashboard'));
 // Route::get('/guru/jadwal-mengajar', fn () => view('guru.jadwal-mengajar'));
 // Route::get('/guru/input-nilai', fn () => view('guru.input-nilai'));

@@ -26,20 +26,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-@php
-    // Data dummy: ganti dengan data dari controller (compact / with)
-    $adminName    = $adminName    ?? 'Admin Yayasan';
-    $adminRole    = $adminRole    ?? 'Super Administrator';
-    $tahunAjaran  = $tahunAjaran  ?? '2026/2027 - Ganjil';
-    $totalUnit    = $totalUnit    ?? 2;
-    $totalStaf    = $totalStaf    ?? 38;
-    $totalSiswa   = $totalSiswa   ?? 353;
-    $siswaSmk     = $siswaSmk     ?? 340;
-    $siswaMi      = $siswaMi      ?? 13;
-    $versi        = $versi        ?? '2.4.0';
-    $initials     = collect(explode(' ', $adminName))->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->take(2)->implode('');
-@endphp
-
 <body class="bg-slate-50 font-sans text-slate-800 antialiased">
 
 <div class="flex min-h-screen">
