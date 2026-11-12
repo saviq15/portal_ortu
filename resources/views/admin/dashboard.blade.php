@@ -1,159 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard Admin | SIAKAD Panel</title>
+@extends('layouts.admin')
 
-    {{-- Jika proyek sudah memakai Vite + Tailwind, ganti CDN di bawah dengan: @vite('resources/css/app.css') --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        brand:   { DEFAULT: '#7F1D1D', dark: '#661717' },
-                        sidebar: '#1E2433',
-                        gold:    '#D4AF37',
-                    },
-                },
-            },
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
+@section('title', 'Dashboard Admin | SIAKAD Panel')
+@section('page_title', 'Dashboard Admin')
+@section('page_data', '{ sidebar: false }')
+@section('escape_action', 'sidebar = false')
+@section('year_label')
+Tahun Ajaran {{ $tahunAjaran }}
+@endsection
 
-<body class="bg-slate-50 font-sans text-slate-800 antialiased">
-
-<div class="flex min-h-screen">
-
-    {{-- Overlay (mobile) --}}
-    <div id="overlay" class="fixed inset-0 z-30 hidden bg-slate-900/50 lg:hidden"></div>
-
-    {{-- ===================== SIDEBAR ===================== --}}
-    <aside id="sidebar"
-           class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-sidebar transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0">
-
-        {{-- Brand --}}
-        <div class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo"
-                 class="h-11 w-11 shrink-0 rounded-full bg-white object-contain p-0.5 ring-2 ring-gold/60">
-            <div class="min-w-0">
-                <p class="truncate text-sm font-bold text-white">SIAKAD Panel</p>
-                <p class="truncate text-[11px] text-slate-400">Yayasan Nurun 'Alannur</p>
-            </div>
-        </div>
-
-        {{-- Menu --}}
-        <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
-
-            {{-- UTAMA --}}
-            <div>
-                <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Utama</p>
-                <a href="{{ route('admin.dashboard') }}"
-                   class="flex items-center gap-3 rounded-lg bg-gold px-3 py-2.5 text-sm font-semibold text-slate-900 shadow-sm">
-                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
-                    </svg>
-                    Dashboard
-                </a>
-            </div>
-
-            {{-- DATA MASTER --}}
-            <div>
-                <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Data Master</p>
-                <div class="space-y-1">
-                    <a href="{{ route('admin.kelas.view') }}"
-                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/>
-                        </svg>
-                        Data Kelas
-                    </a>
-                    <a href="{{ route('admin.pengguna.view') }}"
-                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
-                        </svg>
-                        Data Pengguna
-                    </a>
-                </div>
-            </div>
-
-            {{-- PENGATURAN --}}
-            <div>
-                <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Pengaturan</p>
-                <a href="{{ route('admin.tahun-ajaran') }}"
-                   class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
-                    </svg>
-                    Tahun Ajaran
-                </a>
-            </div>
-        </nav>
-
-        {{-- Logout --}}
-        <div class="border-t border-white/10 p-4">
-            <form method="POST" action="{{ route('logout') }}"></form>
-                @csrf
-                <button type="submit"
-                        class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
-                    </svg>
-                    Keluar / Logout
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- ===================== KONTEN UTAMA ===================== --}}
-    <div class="flex min-w-0 flex-1 flex-col">
-
-        {{-- Header --}}
-        <header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 bg-white px-4 shadow-sm sm:px-8">
-            <div class="flex items-center gap-3">
-                <button id="openSidebar" type="button" aria-label="Buka menu"
-                        class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-                    </svg>
-                </button>
-                <h2 class="text-base font-bold text-slate-900">Dashboard Admin</h2>
-            </div>
-
-            <div class="flex items-center gap-3 sm:gap-4">
-                {{-- Pill tahun ajaran --}}
-                <span class="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700 sm:inline-flex">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                    Tahun Ajaran {{ $tahunAjaran }}
-                </span>
-
-                <span class="hidden h-8 w-px bg-slate-200 sm:block"></span>
-
-                {{-- Profil --}}
-                <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-semibold text-slate-600">
-                        {{ $initials }}
-                    </div>
-                    <div class="hidden leading-tight sm:block">
-                        <p class="text-xs font-bold text-slate-900">{{ $adminName }}</p>
-                        <p class="text-[10px] text-slate-500">{{ $adminRole }}</p>
-                    </div>
-                </div>
-            </div>
-        </header>
-
+@section('content')
         <main class="flex-1 space-y-8 px-4 py-6 sm:px-8 sm:py-8">
 
             {{-- Kartu selamat datang --}}
             <section class="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Selamat Datang, Administrator Yayasan</h1>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Selamat Datang, {{ $adminName }}</h1>
                     <p class="mt-1.5 text-sm text-slate-500">Sistem Informasi Laporan Siswa MI Internasional &amp; SMK Nusantara.</p>
                 </div>
                 <span class="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600">
@@ -194,12 +55,12 @@
                                 </svg>
                             </span>
                         </div>
-                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalStaf }}</p>
+                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalPendidikStaf }}</p>
                         <p class="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
-                            Aktif Mengajar
+                            -
                         </p>
                     </div>
 
@@ -294,21 +155,4 @@
                 <span class="text-slate-400">Sistem versi {{ $versi }}</span>
             </section>
         </main>
-    </div>
-</div>
-
-<script>
-    // Buka / tutup sidebar di layar kecil
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const openBtn = document.getElementById('openSidebar');
-
-    function toggleSidebar(open) {
-        sidebar.classList.toggle('-translate-x-full', !open);
-        overlay.classList.toggle('hidden', !open);
-    }
-    openBtn.addEventListener('click', () => toggleSidebar(true));
-    overlay.addEventListener('click', () => toggleSidebar(false));
-</script>
-</body>
-</html>
+@endsection

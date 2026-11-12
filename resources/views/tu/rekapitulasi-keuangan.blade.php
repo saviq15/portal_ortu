@@ -1,145 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Laporan Keuangan | SIAKAD Panel</title>
+@extends('layouts.tu')
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        brand:   { DEFAULT: '#7F1D1D', dark: '#661717' },
-                        sidebar: '#1E2433',
-                        gold:    '#D4AF37',
-                    },
-                },
-            },
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        [x-cloak]{display:none !important;}
+@section('title', 'Laporan Keuangan | SIAKAD Panel')
+@section('page_title', 'Laporan Keuangan')
+@section('page_data', 'rekapPage()')
+@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
+@section('profile_name_class', 'text-sm text-slate-900')
+@section('profile_role_class', 'text-[11px] text-slate-500')
 
-        @media print {
-            @page { size: A4 portrait; margin: 12mm; }
-            html, body { background: #fff !important; }
-            .no-print { display: none !important; }
-            .print-wrap { padding: 0 !important; background: #fff !important; min-height: 0 !important; }
-            .print-sheet { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; margin: 0 !important; }
-        }
-    </style>
-</head>
+@section('page_title_prefix')
+    <span class="h-5 w-1 rounded-full bg-brand"></span>
+@endsection
 
-<body class="bg-slate-50 font-sans text-slate-800 antialiased"
-      x-data="rekapPage()"
-      @keydown.escape.window="sidebar = false">
+@section('shell_visibility')
+view === 'laporan'
+@endsection
+@section('shell_class', 'no-print')
 
-{{-- =====================================================================
-     TAMPILAN 1 : REKAPITULASI PEMASUKAN & PIUTANG (FOTO 1)
-     ===================================================================== --}}
-<div x-show="view === 'laporan'" class="flex min-h-screen no-print">
-
-    {{-- Overlay sidebar (mobile) --}}
-    <div x-cloak x-show="sidebar" x-transition.opacity @click="sidebar = false"
-         class="fixed inset-0 z-30 bg-slate-900/50 lg:hidden"></div>
-
-    {{-- ===================== SIDEBAR ===================== --}}
-    <aside class="fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-sidebar transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
-           :class="sidebar ? 'translate-x-0' : '-translate-x-full'">
-
-        {{-- Brand --}}
-        <div class="flex items-center gap-3 border-b border-white/10 px-6 py-6">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo"
-                 class="h-14 w-14 shrink-0 rounded-full bg-white object-contain p-0.5 ring-2 ring-gold/60">
-            <div class="min-w-0">
-                <p class="truncate text-[15px] text-white">SIAKAD Panel</p>
-                <p class="truncate text-xs text-slate-400">Portal Tata Usaha</p>
-            </div>
-        </div>
-
-        {{-- Menu --}}
-        <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
-
-            <div>
-                <p class="mb-3 px-3 text-[11px] font-medium uppercase tracking-wider text-slate-400">Keuangan &amp; Administrasi</p>
-                <div class="space-y-1">
-                    <a href="{{ route('tu.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-                        Beranda TU
-                    </a>
-                    <a href="{{ route('tu.transaksi-pembayaran') }}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
-                        Transaksi Pembayaran
-                    </a>
-                    {{-- Menu aktif --}}
-                    <a href="{{ route('tu.rekapitulasi-keuangan') }}" class="flex items-center gap-3 rounded-lg bg-gold px-3 py-2.5 text-sm text-slate-900 shadow-md shadow-gold/30">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
-                        Rekapitulasi Keuangan
-                    </a>
-                </div>
-            </div>
-
-            <div>
-                <p class="mb-3 px-3 text-[11px] font-medium uppercase tracking-wider text-slate-400">Pengaturan</p>
-                <a href="{{ route('tu.profil-pengguna') }}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-                    Profil Pengguna
-                </a>
-            </div>
-        </nav>
-
-        {{-- Logout --}}
-        <div class="border-t border-white/10 p-4">
-            <form method="POST" action="{{ route('logout') }}">
-            @csrf
-                <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
-                    </svg>
-                Keluar / Logout
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- ===================== KONTEN UTAMA ===================== --}}
-    <div class="flex min-w-0 flex-1 flex-col">
-
-        {{-- Header --}}
-        <header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-slate-100 bg-white px-4 shadow-sm sm:px-8">
-            <div class="flex items-center gap-3">
-                <button type="button" @click="sidebar = true" aria-label="Buka menu"
-                        class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-                </button>
-                <span class="h-5 w-1 rounded-full bg-brand"></span>
-                <h2 class="text-base text-slate-900">Laporan Keuangan</h2>
-            </div>
-
-            <div class="flex items-center gap-3 sm:gap-4">
-                <span class="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                    Tahun Ajaran 2026/2027
-                </span>
-                <span class="hidden h-8 w-px bg-slate-200 sm:block"></span>
-                <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">NF</div>
-                    <div class="hidden leading-tight sm:block">
-                        <p class="text-sm text-slate-900">Ibu Nur Fina</p>
-                        <p class="text-[11px] text-slate-500">Staf TU</p>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="flex-1 px-4 py-8 sm:px-8">
+@section('content')
+<main class="flex-1 px-4 py-8 sm:px-8">
 
             {{-- Judul halaman --}}
             <div>
@@ -291,9 +170,9 @@
                 <span class="text-slate-400">SIAKAD v2.4.0</span>
             </div>
         </main>
-    </div>
-</div>
+@endsection
 
+@section('outside_content')
 {{-- =====================================================================
      TAMPILAN 2 : PRATINJAU CETAK A4 (FOTO 2)
      ===================================================================== --}}
@@ -429,7 +308,21 @@
         </div>
     </div>
 </div>
+@endsection
 
+@push('styles')
+<style>
+@media print {
+            @page { size: A4 portrait; margin: 12mm; }
+            html, body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .print-wrap { padding: 0 !important; background: #fff !important; min-height: 0 !important; }
+            .print-sheet { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; margin: 0 !important; }
+        }
+</style>
+@endpush
+
+@push('scripts')
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('rekapPage', () => ({
@@ -509,5 +402,4 @@
         }));
     });
 </script>
-</body>
-</html>
+@endpush

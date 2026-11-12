@@ -1,0 +1,185 @@
+.wali-app-shell {
+    display: flex;
+}
+
+.wali-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    display: flex;
+    width: var(--layout-sidebar-width);
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--layout-sidebar-background);
+    transform: translateX(-100%);
+    transition: transform 200ms;
+}
+
+.wali-sidebar.is-open {
+    transform: translateX(0);
+}
+
+.wali-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgb(15 23 42 / 0.5);
+}
+
+.wali-sidebar-brand {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    padding: var(--layout-sidebar-gutter);
+}
+
+.wali-sidebar-logo {
+    display: block;
+    width: var(--layout-logo-size);
+    height: var(--layout-logo-size);
+    flex: none;
+    border-radius: 9999px;
+    background: #fff;
+    object-fit: contain;
+    padding: 0.125rem;
+    box-shadow: 0 0 0 2px rgb(212 175 55 / 0.6);
+}
+
+.wali-sidebar-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wali-sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--layout-nav-padding-y) var(--layout-nav-padding-x);
+}
+
+.wali-sidebar-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-section-gap);
+}
+
+.wali-sidebar-label {
+    margin: 0 0 0.75rem;
+    padding: 0 var(--layout-item-padding-x);
+    color: #94a3b8;
+    font-size: var(--layout-menu-label-size);
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.wali-sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-item-gap);
+}
+
+.wali-menu-item {
+    display: flex;
+    width: 100%;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: 0.75rem;
+    border: 0;
+    border-radius: var(--layout-item-radius);
+    background: transparent;
+    padding: var(--layout-item-padding-y) var(--layout-item-padding-x);
+    color: #cbd5e1;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    transition: color 150ms, background-color 150ms;
+    cursor: pointer;
+}
+
+.wali-menu-item:not(.is-active):hover {
+    background: rgb(255 255 255 / 0.05);
+    color: #fff;
+}
+
+.wali-menu-item.is-active {
+    background: var(--layout-active-background);
+    color: #0f172a;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.wali-menu-icon {
+    width: var(--layout-icon-size);
+    height: var(--layout-icon-size);
+    flex: none;
+}
+
+.wali-sidebar-logout {
+    flex: none;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+    padding: 1rem;
+}
+
+.wali-logout-item {
+    font-weight: 500;
+}
+
+.wali-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    height: var(--layout-header-height);
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    padding: 0 1rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.wali-menu-toggle {
+    display: inline-flex;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: #64748b;
+}
+
+.wali-menu-toggle:hover {
+    background: #f1f5f9;
+}
+
+.wali-app-main {
+    margin-left: 0;
+}
+
+@media (min-width: 640px) {
+    .wali-topbar {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .wali-sidebar {
+        transform: translateX(0);
+    }
+
+    .wali-sidebar-overlay,
+    .wali-menu-toggle {
+        display: none;
+    }
+
+    .wali-app-main {
+        margin-left: var(--layout-sidebar-width);
+    }
+}

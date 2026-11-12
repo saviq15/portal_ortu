@@ -1,0 +1,50 @@
+:root {
+    --layout-sidebar-width: 18rem;
+    --layout-sidebar-background: #1E2433;
+    --layout-active-background: #D4AF37;
+    --layout-header-height: 4rem;
+    --layout-logo-size: 3.5rem;
+    --layout-sidebar-gutter: 1.5rem;
+    --layout-nav-padding-x: 1rem;
+    --layout-nav-padding-y: 1.5rem;
+    --layout-section-gap: 1.5rem;
+    --layout-item-gap: 0.25rem;
+    --layout-item-padding-x: 0.75rem;
+    --layout-item-padding-y: 0.625rem;
+    --layout-item-radius: 0.5rem;
+    --layout-icon-size: 1.25rem;
+    --layout-menu-label-size: 0.6875rem;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.app-shell {
+    display: flex;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.app-main {
+    display: flex;
+    height: 100vh;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+}
+
+.app-content-scroll {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+}

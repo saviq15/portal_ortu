@@ -1,0 +1,223 @@
+:root {
+    --guru-sidebar-width: 18rem;
+    --guru-sidebar-background: #1E2433;
+    --guru-active-background: #D4AF37;
+    --guru-header-height: 4rem;
+    --guru-logo-size: 3.5rem;
+    --guru-sidebar-gutter: 1.5rem;
+    --guru-nav-padding-x: 1rem;
+    --guru-nav-padding-y: 1.5rem;
+    --guru-section-gap: 1.5rem;
+    --guru-item-gap: 0.25rem;
+    --guru-item-padding-x: 0.75rem;
+    --guru-item-padding-y: 0.625rem;
+    --guru-item-radius: 0.5rem;
+    --guru-icon-size: 1.25rem;
+    --guru-menu-label-size: 0.6875rem;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.guru-app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.guru-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    display: flex;
+    width: var(--guru-sidebar-width);
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--guru-sidebar-background);
+    transform: translateX(-100%);
+    transition: transform 200ms;
+}
+
+.guru-sidebar.is-open {
+    transform: translateX(0);
+}
+
+.guru-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgb(15 23 42 / 0.5);
+}
+
+.guru-sidebar-brand {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    padding: var(--guru-sidebar-gutter);
+}
+
+.guru-sidebar-logo {
+    display: block;
+    width: var(--guru-logo-size);
+    height: var(--guru-logo-size);
+    flex: none;
+    border-radius: 9999px;
+    background: #fff;
+    object-fit: contain;
+    padding: 0.125rem;
+    box-shadow: 0 0 0 2px rgb(212 175 55 / 0.6);
+}
+
+.guru-sidebar-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.guru-sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--guru-nav-padding-y) var(--guru-nav-padding-x);
+}
+
+.guru-sidebar-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--guru-section-gap);
+}
+
+.guru-sidebar-label {
+    margin: 0 0 0.75rem;
+    padding: 0 var(--guru-item-padding-x);
+    color: #94a3b8;
+    font-size: var(--guru-menu-label-size);
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.guru-sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--guru-item-gap);
+}
+
+.guru-menu-item {
+    display: flex;
+    width: 100%;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: 0.75rem;
+    border: 0;
+    border-radius: var(--guru-item-radius);
+    background: transparent;
+    padding: var(--guru-item-padding-y) var(--guru-item-padding-x);
+    color: #cbd5e1;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    transition: color 150ms, background-color 150ms;
+    cursor: pointer;
+}
+
+.guru-menu-item:not(.is-active):hover {
+    background: rgb(255 255 255 / 0.05);
+    color: #fff;
+}
+
+.guru-menu-item.is-active {
+    background: var(--guru-active-background);
+    color: #0f172a;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.guru-menu-icon {
+    width: var(--guru-icon-size);
+    height: var(--guru-icon-size);
+    flex: none;
+}
+
+.guru-sidebar-logout {
+    flex: none;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+    padding: 1rem;
+}
+
+.guru-logout-item {
+    font-weight: 500;
+}
+
+.guru-app-main {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.guru-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    height: var(--guru-header-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    padding: 0 1rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.guru-menu-toggle {
+    display: inline-flex;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: #64748b;
+}
+
+.guru-menu-toggle:hover {
+    background: #f1f5f9;
+}
+
+.guru-content-scroll {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+}
+
+@media (min-width: 640px) {
+    .guru-topbar {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .guru-sidebar {
+        transform: translateX(0);
+    }
+
+    .guru-sidebar-overlay,
+    .guru-menu-toggle {
+        display: none;
+    }
+
+    .guru-app-main {
+        margin-left: var(--guru-sidebar-width);
+    }
+}

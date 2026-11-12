@@ -11,6 +11,7 @@ use App\Http\Controllers\PrestasiSiswaController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SuratPanggilanController;
 use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WawancaraYayasanController;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -51,9 +52,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Jalur rute lainnya tetap biarkan seperti ini:
-    Route::get('/kelas', fn () => view('admin.kelas'))->name('kelas.view');
-    Route::get('/pengguna', fn () => view('admin.pengguna'))->name('pengguna.view');
-    Route::get('/tahun-ajaran', fn () => view('admin.tahun-ajaran'))->name('tahun-ajaran');
+    Route::get('/kelas', [KelasController::class, 'page'])->name('kelas.view');
+    Route::get('/pengguna', [UserController::class, 'page'])->name('pengguna.view');
+    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun-ajaran');
 
     // Route Backend Controller
     Route::get('/data/kelas', [KelasController::class, 'index'])->name('kelas.index');
