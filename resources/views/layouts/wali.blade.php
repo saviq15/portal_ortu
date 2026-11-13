@@ -21,13 +21,13 @@ x-show="@yield('shell_visibility', 'true')"
 @section('topbar')
     @php
         $waliUser = \Illuminate\Support\Facades\Auth::user();
-        $waliName = $waliUser->name;
-        $waliNameParts = array_slice(preg_split('/\s+/', trim($waliName)), 0, 2);
+        $waliName = $waliUser?->name ?? '-';
+        $waliNameParts = array_slice(preg_split('/\s+/', trim($waliName)) ?: [], 0, 2);
         $waliInitials = mb_strtoupper(implode('', array_map(
             fn ($part) => mb_substr($part, 0, 1),
             $waliNameParts
-        )));
-        $waliRole = $waliUser->role === 'orang_tua' ? 'Orang Tua' : $waliUser->role;
+        ))) ?: '-';
+        $waliRole = $waliUser?->role === 'orang_tua' ? 'Orang Tua' : ($waliUser?->role ?? '-');
     @endphp
     <header class="wali-topbar">
         <div class="flex items-center gap-3">
@@ -42,7 +42,7 @@ x-show="@yield('shell_visibility', 'true')"
         <div class="flex items-center gap-3 sm:gap-4">
             <span class="@yield('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex')">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                @yield('year_label', 'Tahun Ajaran 2026/2027')
+                @yield('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
             </span>
             @yield('year_divider')
             <div class="flex items-center gap-3">

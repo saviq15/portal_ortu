@@ -1,9 +1,11 @@
 @extends('layouts.tu')
 
+@php($tuName = \Illuminate\Support\Facades\Auth::user()?->name ?? '-')
+
 @section('title', 'Laporan Keuangan | SIAKAD Panel')
 @section('page_title', 'Laporan Keuangan')
 @section('page_data', 'rekapPage()')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-sm text-slate-900')
 @section('profile_role_class', 'text-[11px] text-slate-500')
@@ -49,8 +51,9 @@ view === 'laporan'
                         <select x-model="unit" aria-label="Pilih unit"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/60 py-2.5 pl-4 pr-9 text-sm text-slate-800 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20">
                             <option value="">Semua Unit (MI &amp; SMK)</option>
-                            <option>SMK Nusantara</option>
-                            <option>MI Internasional</option>
+                            @foreach(($unitOptions ?? []) as $unitOption)
+                                <option value="{{ $unitOption }}">{{ $unitOption }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -62,9 +65,9 @@ view === 'laporan'
                         <select x-model="jenis" aria-label="Pilih jenis transaksi"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/60 py-2.5 pl-4 pr-9 text-sm text-slate-800 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20">
                             <option value="">Semua Jenis Transaksi</option>
-                            <option>SPP</option>
-                            <option>Tabungan</option>
-                            <option>Seragam</option>
+                            @foreach(($jenisTransaksiOptions ?? []) as $jenisOption)
+                                <option value="{{ $jenisOption }}">{{ $jenisOption }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -140,8 +143,9 @@ view === 'laporan'
                                     </td>
                                     <td class="px-4 py-[18px]" x-text="rp(r.nominal)"></td>
                                     <td class="px-4 py-[18px] text-center">
-                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Tercatat
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs"
+                                              :class="r.status === 'Tercatat' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-600'">
+                                            <span class="h-1.5 w-1.5 rounded-full" :class="r.status === 'Tercatat' ? 'bg-emerald-500' : 'bg-slate-400'"></span><span x-text="r.status ?? '-'"></span>
                                         </span>
                                     </td>
                                 </tr>
@@ -165,9 +169,9 @@ view === 'laporan'
             <div class="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Pembayaran &amp; Rekapitulasi Keuangan terintegrasi Yayasan Nurun 'Alannur.
+                    Sistem Pembayaran &amp; Rekapitulasi Keuangan terintegrasi {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -210,9 +214,9 @@ view === 'laporan'
                         <span class="text-[8px] uppercase tracking-wider">Yayasan</span>
                     </div>
                     <div class="flex-1 text-center sm:pr-20">
-                        <h2 class="text-xl uppercase tracking-wide text-slate-900">Yayasan Pendidikan Nurun 'Alannur</h2>
-                        <p class="mt-1 text-base uppercase text-slate-900">SMK Nusantara</p>
-                        <p class="mt-1 text-[11px] text-slate-700">Kapencar RT. 10 RW. 09, Kecamatan Kertek, Kabupaten Wonosobo, Jawa Tengah 56371</p>
+                        <h2 class="text-xl uppercase tracking-wide text-slate-900">{{ $namaYayasan ?? '-' }}</h2>
+                        <p class="mt-1 text-base uppercase text-slate-900">{{ $namaSekolah ?? '-' }}</p>
+                        <p class="mt-1 text-[11px] text-slate-700">{{ $alamatSekolah ?? '-' }}</p>
                     </div>
                 </div>
 
@@ -257,7 +261,7 @@ view === 'laporan'
                                     <td class="border-2 border-slate-900 px-3 py-3" x-text="r.uraian"></td>
                                     <td class="border-2 border-slate-900 px-3 py-3 text-center" x-text="r.unit"></td>
                                     <td class="border-2 border-slate-900 px-3 py-3 text-right" x-text="rp(r.nominal)"></td>
-                                    <td class="border-2 border-slate-900 px-3 py-3 text-center">Tercatat</td>
+                                    <td class="border-2 border-slate-900 px-3 py-3 text-center" x-text="r.status ?? '-'"></td>
                                 </tr>
                             </template>
                             <tr x-cloak x-show="baris.length === 0">
@@ -272,7 +276,7 @@ view === 'laporan'
                     </table>
                 </div>
 
-                <p class="mt-4 text-[11px] text-slate-600">* Catatan: Data transaksi di atas telah divalidasi oleh sistem perbendaharaan yayasan dan telah terverifikasi secara berjenjang.</p>
+                <p class="mt-4 text-[11px] text-slate-600">* Catatan: {{ $catatanValidasiLaporan ?? 'Data transaksi di atas telah divalidasi oleh sistem perbendaharaan yayasan dan telah terverifikasi secara berjenjang.' }}</p>
 
                 {{-- Tanda tangan --}}
                 <div class="mt-14 grid grid-cols-1 gap-10 text-center text-sm text-slate-900 sm:grid-cols-2">
@@ -280,22 +284,22 @@ view === 'laporan'
                         <p>Mengetahui,</p>
                         <p class="mt-3">Kepala Bagian Keuangan</p>
                         <div class="h-24"></div>
-                        <p class="underline">( ..................................... )</p>
-                        <p class="mt-1 text-[11px] text-slate-600">NIP: 19820412 200801 1 004</p>
+                        <p class="underline">( {{ $namaKepalaKeuangan ?? '-' }} )</p>
+                        <p class="mt-1 text-[11px] text-slate-600">NIP: {{ $nipKepalaKeuangan ?? '-' }}</p>
                     </div>
                     <div>
-                        <p x-text="'Wonosobo, ' + dicetak.tanggal"></p>
+                        <p x-text="'{{ $lokasiSekolah ?? '-' }}, ' + dicetak.tanggal"></p>
                         <p class="mt-3">Staf Tata Usaha</p>
                         <div class="mx-auto mt-5 flex h-8 w-28 items-center justify-center border border-dashed border-slate-400 text-[10px] text-slate-500">[ Stempel / TTD ]</div>
                         <div class="h-7"></div>
-                        <p class="underline">( Ibu Nur Fina )</p>
-                        <p class="mt-1 text-[11px] text-slate-600">ID TU: TU-202604</p>
+                        <p class="underline">( Ibu {{ $tuName ?? '-' }} )</p>
+                        <p class="mt-1 text-[11px] text-slate-600">ID TU: {{ $tuId ?? '-' }}</p>
                     </div>
                 </div>
 
                 {{-- Footer dokumen --}}
                 <div class="mt-12 flex flex-col gap-1 border-t border-slate-300 pt-3 text-[10px] text-slate-500 sm:flex-row sm:justify-between">
-                    <p>Dokumen Resmi SIAKAD Panel v2.4.0 — Rekapitulasi Keuangan Yayasan</p>
+                    <p>Dokumen Resmi SIAKAD Panel v{{ $versi ?? '-' }} — Rekapitulasi Keuangan {{ $namaYayasan ?? '-' }}</p>
                     <p x-text="'Dicetak otomatis pada: ' + dicetak.pendek"></p>
                 </div>
             </div>
@@ -304,7 +308,7 @@ view === 'laporan'
         {{-- Petunjuk (tidak ikut tercetak) --}}
         <div class="no-print mt-4 grid grid-cols-1 gap-3 px-1 text-xs text-slate-500 sm:grid-cols-2">
             <p>Tekan tombol Cetak Dokumen PDF atau pintasan Ctrl + P untuk menyimpan dalam bentuk PDF fisik.</p>
-            <p>Sistem Informasi Akademik &amp; Keuangan — Yayasan Nurun 'Alannur</p>
+            <p>Sistem Informasi Akademik &amp; Keuangan — {{ $namaYayasan ?? '-' }}</p>
         </div>
     </div>
 </div>
@@ -330,29 +334,16 @@ view === 'laporan'
             view: 'laporan',   // 'laporan' (foto 1) | 'cetak' (foto 2)
 
             // Filter
-            bulan: 'Oktober 2026',
+            bulan: @json($bulanTerpilih ?? ''),
             unit: '',
             jenis: '',
-            daftarBulan: ['September 2026', 'Oktober 2026'],
+            daftarBulan: @json($bulanOptions ?? []),
 
             dicetak: { panjang: '', tanggal: '', pendek: '' },
 
-            // Ringkasan per bulan (dummy, frontend saja)
-            ringkasanBulan: {
-                'Oktober 2026':   { pemasukan: 15450000, piutang: 3000000, siswa: 24 },
-                'September 2026': { pemasukan: 14200000, piutang: 3750000, siswa: 30 },
-            },
+            ringkasanBulan: @json($ringkasanKeuangan ?? []),
 
-            // Data transaksi dummy
-            data: [
-                { bulan: 'Oktober 2026', tgl: '25 Okt 2026', uraian: 'Pembayaran SPP - Kelas X TKJ 1 (15 Siswa)', unit: 'SMK Nusantara',   jenis: 'SPP',      nominal: 3750000 },
-                { bulan: 'Oktober 2026', tgl: '24 Okt 2026', uraian: 'Setor Tabungan - Kelas 1 MI (10 Siswa)',    unit: 'MI Internasional', jenis: 'Tabungan', nominal: 500000 },
-                { bulan: 'Oktober 2026', tgl: '23 Okt 2026', uraian: 'Pembayaran Seragam Olahraga',               unit: 'SMK Nusantara',   jenis: 'Seragam',  nominal: 1500000 },
-
-                { bulan: 'September 2026', tgl: '26 Sep 2026', uraian: 'Pembayaran SPP - Kelas XI TKR 1 (12 Siswa)', unit: 'SMK Nusantara',   jenis: 'SPP',      nominal: 3000000 },
-                { bulan: 'September 2026', tgl: '18 Sep 2026', uraian: 'Setor Tabungan - Kelas 3 MI (8 Siswa)',      unit: 'MI Internasional', jenis: 'Tabungan', nominal: 400000 },
-                { bulan: 'September 2026', tgl: '10 Sep 2026', uraian: 'Pembayaran SPP - Kelas X TKJ 2 (14 Siswa)',  unit: 'SMK Nusantara',   jenis: 'SPP',      nominal: 3500000 },
-            ],
+            data: @json($transaksiKeuangan ?? []),
 
             get baris() {
                 return this.data.filter(r =>
@@ -387,7 +378,7 @@ view === 'laporan'
                 const esc = (s) => '"' + String(s).replace(/"/g, '""') + '"';
                 const baris = [
                     ['Tanggal', 'Uraian', 'Unit', 'Pemasukan (Rp)', 'Status'].map(esc).join(';'),
-                    ...this.baris.map(r => [r.tgl, r.uraian, r.unit, r.nominal, 'Tercatat'].map(esc).join(';')),
+                    ...this.baris.map(r => [r.tgl, r.uraian, r.unit, r.nominal, r.status].map(esc).join(';')),
                     ['', '', 'Total Terakumulasi', this.total, ''].map(esc).join(';'),
                 ];
                 const blob = new Blob(['\uFEFF' + baris.join('\r\n')], { type: 'text/csv;charset=utf-8;' });

@@ -168,10 +168,9 @@
                                                 <select x-model="s.presensi" @change="ubahPresensi(s)" :name="'siswa[' + s.nis + '][presensi]'"
                                                         class="block w-full appearance-none rounded-lg border py-2 pl-7 pr-6 text-xs transition focus:outline-none focus:ring-2"
                                                         :class="presensiWarna(s.presensi).select">
-                                                    <option value="Hadir">Hadir</option>
-                                                    <option value="Sakit">Sakit</option>
-                                                    <option value="Izin">Izin</option>
-                                                    <option value="Alpa">Alpa</option>
+                                                    @foreach(($statusPresensiOptions ?? ['Hadir', 'Sakit', 'Izin', 'Alpa']) as $statusPresensi)
+                                                        <option value="{{ $statusPresensi }}">{{ $statusPresensi }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </td>
@@ -183,9 +182,9 @@
                                                         :name="'siswa[' + s.nis + '][status]'"
                                                         class="block w-full appearance-none rounded-lg border py-2 pl-3 pr-6 text-xs transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed"
                                                         :class="statusWarna(s.status)">
-                                                    <option value="Belum Dinilai">Belum Dinilai</option>
-                                                    <option value="Tuntas">Tuntas</option>
-                                                    <option value="Perlu Bimbingan">Perlu Bimbingan</option>
+                                                    @foreach(($statusCapaianOptions ?? ['Belum Dinilai', 'Tuntas', 'Perlu Bimbingan']) as $statusCapaian)
+                                                        <option value="{{ $statusCapaian }}">{{ $statusCapaian }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </td>
@@ -207,6 +206,9 @@
                                         </td>
                                     </tr>
                                 </template>
+                                <tr x-cloak x-show="siswa.length === 0">
+                                    <td colspan="6" class="px-6 py-12 text-center text-sm text-slate-400">Belum ada data siswa pada rombongan belajar ini.</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -232,7 +234,7 @@
                     <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Jurnal dan Penilaian terintegrasi secara otomatis ke Rapor Digital Siswa.
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -253,39 +255,16 @@ document.addEventListener('alpine:init', () => {
             sidebar: false,
             toast: false,
             toastTimer: null,
-            terakhir: '1 menit lalu',
-            kkm: 75, // batas ketuntasan minimal
+            terakhir: @json($terakhirDisimpan ?? '-'),
+            kkm: @json($kkmJurnal ?? 75),
 
-            tanggal: '2026-10-26',
-            kelas: 'X TKJ 1',
-            mapel: 'Dasar Jaringan',
-            materi: 'Pengenalan Topologi Star & Ring',
-            daftarKelas: ['X TKJ 1', 'X TKJ 2', 'XI TKR 1', 'XI TKR 2'],
-            daftarMapel: ['Dasar Jaringan', 'Mesin Otomotif', 'Pendidikan Agama Islam'],
-
-            // Data dummy 34 siswa (frontend saja)
-            siswa: (() => {
-                const awal = [
-                    { nis: '20261001', nama: 'Ahmad Fauzi',    presensi: 'Hadir', status: 'Tuntas',          nilai: 85, catatan: 'Mampu mempraktikkan crimping kabel dengan sangat baik.' },
-                    { nis: '20261002', nama: 'Budi Santoso',   presensi: 'Alpa',  status: 'Belum Dinilai',   nilai: '', catatan: '' },
-                    { nis: '20261003', nama: 'Citra Lestari',  presensi: 'Hadir', status: 'Perlu Bimbingan', nilai: 60, catatan: 'Masih bingung urutan kabel.' },
-                    { nis: '20261004', nama: 'Dedi Kurniawan', presensi: 'Hadir', status: 'Tuntas',          nilai: 80, catatan: 'Aktif bertanya dan cepat memahami skema topologi bus & star.' },
-                ];
-                const lainnya = [
-                    'Eko Prasetyo', 'Fajar Nugroho', 'Galih Pratama', 'Hafidz Maulana', 'Imam Syafii',
-                    'Indra Kusuma', 'Khoirul Anam', 'Lutfi Hakim', 'Miftahul Huda', 'Nanda Saputra',
-                    'Oki Setiawan', 'Putri Maharani', 'Qori Aulia', 'Rian Hidayat', 'Siti Nurhaliza',
-                    'Taufik Hidayat', 'Umar Faruq', 'Vina Anggraini', 'Wahyu Setiawan', 'Yusuf Ramadhan',
-                    'Zahra Salsabila', 'Alfin Maulidi', 'Bagus Setiaji', 'Candra Wijaya', 'Dwi Lestari',
-                    'Elisa Putri', 'Farhan Alfarizi', 'Gita Permata', 'Hanif Abdillah', 'Ilham Ramadhani',
-                ].map((nama, i) => ({
-                    nis: String(20261005 + i),
-                    nama,
-                    presensi: nama === 'Rian Hidayat' ? 'Alpa' : 'Hadir',
-                    status: 'Belum Dinilai', nilai: '', catatan: '',
-                }));
-                return [...awal, ...lainnya];
-            })(),
+            tanggal: @json($tanggalJurnal ?? ''),
+            kelas: @json($kelasJurnalTerpilih ?? ''),
+            mapel: @json($mataPelajaranJurnalTerpilih ?? ''),
+            materi: @json($materiPokok ?? ''),
+            daftarKelas: @json($kelasOptions ?? []),
+            daftarMapel: @json($mataPelajaranOptions ?? []),
+            siswa: @json($siswaJurnal ?? []),
 
             get ringkasan() {
                 const hitung = (p) => this.siswa.filter(s => s.presensi === p).length;

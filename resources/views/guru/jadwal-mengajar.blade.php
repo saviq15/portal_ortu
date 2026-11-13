@@ -13,7 +13,7 @@ x-show="view === 'jadwal'"
 
             {{-- Judul halaman --}}
             <div>
-                <h1 class="text-2xl tracking-tight text-slate-800">Jadwal Mengajar Bapak Heri Susanto</h1>
+                <h1 class="text-2xl tracking-tight text-slate-800">Jadwal Mengajar Bapak {{ $guruName ?? '-' }}</h1>
                 <p class="mt-2 text-sm text-slate-500">Daftar kelas, mata pelajaran, dan waktu mengajar Anda selama satu minggu.</p>
             </div>
 
@@ -25,12 +25,9 @@ x-show="view === 'jadwal'"
                         <select id="hari" x-model="hari"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2 pl-3 pr-9 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                             <option value="">Semua Hari</option>
-                            <option>Senin</option>
-                            <option>Selasa</option>
-                            <option>Rabu</option>
-                            <option>Kamis</option>
-                            <option>Jumat</option>
-                            <option>Sabtu</option>
+                            @foreach(($hariOptions ?? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']) as $hariOption)
+                                <option value="{{ $hariOption }}">{{ $hariOption }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -71,9 +68,11 @@ x-show="view === 'jadwal'"
                                         <span class="inline-flex rounded border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600" x-text="j.ruang"></span>
                                     </td>
                                     <td class="px-4 py-[18px]">
-                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs text-emerald-700">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                            Aktif
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs"
+                                              :class="j.status === 'Aktif' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-100 text-slate-600'">
+                                            <span class="h-1.5 w-1.5 rounded-full"
+                                                  :class="j.status === 'Aktif' ? 'bg-emerald-500' : 'bg-slate-400'"></span>
+                                            <span x-text="j.status ?? '-'"></span>
                                         </span>
                                     </td>
                                 </tr>
@@ -88,11 +87,13 @@ x-show="view === 'jadwal'"
 
                 {{-- Footer tabel --}}
                 <div class="flex flex-col gap-2 border-t border-slate-200 px-6 py-3.5 text-xs sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-slate-500">Total: 5 sesi mengajar terjadwal (24 Jam Pelajaran / minggu)</p>
-                    <p class="flex items-center gap-2 text-emerald-600">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        Semua jadwal terverifikasi bagian kurikulum
-                    </p>
+                    <p class="text-slate-500">Total: {{ $totalSesiMengajar ?? 0 }} sesi mengajar terjadwal ({{ $bebanJam ?? 0 }} Jam Pelajaran / minggu)</p>
+                    @if($jadwalTerverifikasi ?? false)
+                        <p class="flex items-center gap-2 text-emerald-600">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                            Semua jadwal terverifikasi bagian kurikulum
+                        </p>
+                    @endif
                 </div>
             </div>
 
@@ -100,9 +101,9 @@ x-show="view === 'jadwal'"
             <div class="mt-6 flex flex-col gap-2 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Jurnal dan Penilaian terintegrasi secara otomatis ke Rapor Digital Siswa Yayasan Nurun 'Alannur.
+                    Jurnal dan Penilaian terintegrasi secara otomatis ke Rapor Digital Siswa {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -147,22 +148,22 @@ x-show="view === 'jadwal'"
                              onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'text-[10px] tracking-wider text-slate-700',textContent:'LOGO'}))">
                     </div>
                     <div>
-                        <h2 class="text-xl uppercase tracking-tight text-slate-900">Yayasan Nurun 'Alannur</h2>
-                        <p class="mt-0.5 text-sm text-slate-900">SMK Nusantara</p>
-                        <p class="mt-1 text-[11px] text-slate-600">Kapencar RT. 10 RW. 09, Kecamatan Kertek, Kabupaten Wonosobo, Jawa Tengah 56371</p>
+                        <h2 class="text-xl uppercase tracking-tight text-slate-900">{{ $namaYayasan ?? '-' }}</h2>
+                        <p class="mt-0.5 text-sm text-slate-900">{{ $namaSekolah ?? '-' }}</p>
+                        <p class="mt-1 text-[11px] text-slate-600">{{ $alamatSekolah ?? '-' }}</p>
                     </div>
                 </div>
                 <div class="text-left sm:text-right">
-                    <p class="text-sm uppercase text-slate-900">Tahun Ajaran 2026/2027</p>
-                    <p class="mt-1 text-xs text-slate-600">Semester Ganjil</p>
-                    <p class="mt-1 text-[11px] text-slate-500">Status: Terverifikasi Kurikulum</p>
+                    <p class="text-sm uppercase text-slate-900">Tahun Ajaran {{ $tahunAjaran ?? '-' }}</p>
+                    <p class="mt-1 text-xs text-slate-600">Semester {{ $semester ?? '-' }}</p>
+                    <p class="mt-1 text-[11px] text-slate-500">Status: {{ ($jadwalTerverifikasi ?? false) ? 'Terverifikasi Kurikulum' : '-' }}</p>
                 </div>
             </div>
 
             {{-- Judul dokumen --}}
             <div class="mt-8 text-center">
                 <h3 class="text-xl uppercase tracking-wide text-slate-900 underline underline-offset-4">Jadwal Mengajar Guru</h3>
-                <p class="mt-2 text-sm text-slate-900">Nama: Bapak Heri Susanto | NIP: 198010202005011001</p>
+                <p class="mt-2 text-sm text-slate-900">Nama: Bapak {{ $guruName ?? '-' }} | NIP: {{ $guruNip ?? '-' }}</p>
             </div>
 
             {{-- Tabel dokumen --}}
@@ -187,9 +188,12 @@ x-show="view === 'jadwal'"
                                 <td class="border-2 border-slate-900 px-3 py-3 text-center" x-text="j.ruang"></td>
                             </tr>
                         </template>
+                        <tr x-cloak x-show="jadwal.length === 0">
+                            <td colspan="5" class="border-2 border-slate-900 px-3 py-3 text-center text-xs text-slate-500">Belum ada jadwal mengajar.</td>
+                        </tr>
                         <tr class="bg-slate-50">
                             <td colspan="5" class="border-2 border-slate-900 px-3 py-2 text-xs text-slate-600">
-                                * Total beban mengajar: 5 sesi per minggu (24 Jam Pelajaran ekuivalen).
+                                * Total beban mengajar: {{ $totalSesiMengajar ?? 0 }} sesi per minggu ({{ $bebanJam ?? 0 }} Jam Pelajaran ekuivalen).
                             </td>
                         </tr>
                     </tbody>
@@ -202,21 +206,21 @@ x-show="view === 'jadwal'"
                     <p>Mengetahui,</p>
                     <p class="mt-3">Kepala Sekolah</p>
                     <div class="h-24"></div>
-                    <p class="underline">(.....................................)</p>
-                    <p class="mt-1 text-[11px] text-slate-500">NIP. ................................</p>
+                    <p class="underline">{{ $namaKepalaSekolah ?? '-' }}</p>
+                    <p class="mt-1 text-[11px] text-slate-500">NIP. {{ $nipKepalaSekolah ?? '-' }}</p>
                 </div>
                 <div>
-                    <p>Wonosobo, 29 Oktober 2026</p>
+                    <p>{{ $lokasiSekolah ?? '-' }}, {{ ($tanggalCetak ?? null)?->format('d F Y') ?? '-' }}</p>
                     <p class="mt-3">Guru Mata Pelajaran</p>
                     <div class="h-24"></div>
-                    <p class="underline">Bapak Heri Susanto</p>
-                    <p class="mt-1 text-[11px] text-slate-500">NIP. 198010202005011001</p>
+                    <p class="underline">Bapak {{ $guruName ?? '-' }}</p>
+                    <p class="mt-1 text-[11px] text-slate-500">NIP. {{ $guruNip ?? '-' }}</p>
                 </div>
             </div>
 
             {{-- Footer dokumen --}}
             <div class="mt-12 flex flex-col gap-1 border-t border-slate-300 pt-3 text-[10px] text-slate-500 sm:flex-row sm:justify-between">
-                <p>Dicetak melalui SIAKAD Panel Yayasan Nurun 'Alannur</p>
+                <p>Dicetak melalui SIAKAD Panel {{ $namaYayasan ?? '-' }}</p>
                 <p>Dokumen Resmi Akademik &bull; Halaman 1 dari 1</p>
             </div>
         </div>
@@ -244,14 +248,7 @@ document.addEventListener('alpine:init', () => {
             view: 'jadwal',   // 'jadwal' (foto 1) | 'cetak' (foto 2)
             hari: '',
 
-            // Data dummy (frontend saja)
-            jadwal: [
-                { hari: 'Senin',  waktu: '07:30 - 09:00', kelas: 'X TKJ 1',  mapel: 'Dasar Jaringan', ruang: 'Lab Komputer 1' },
-                { hari: 'Senin',  waktu: '09:30 - 11:00', kelas: 'XI TKR 1', mapel: 'Mesin Otomotif', ruang: 'Bengkel Utama'  },
-                { hari: 'Senin',  waktu: '11:00 - 12:30', kelas: 'X TKJ 2',  mapel: 'Dasar Jaringan', ruang: 'Lab Komputer 2' },
-                { hari: 'Selasa', waktu: '07:30 - 09:00', kelas: 'X TKJ 1',  mapel: 'Dasar Jaringan', ruang: 'Lab Komputer 1' },
-                { hari: 'Kamis',  waktu: '09:30 - 11:00', kelas: 'XI TKR 2', mapel: 'Mesin Otomotif', ruang: 'Bengkel Utama'  },
-            ],
+            jadwal: @json($jadwalMengajar ?? []),
 
             get filtered() {
                 return this.jadwal.filter(j => !this.hari || j.hari === this.hari);

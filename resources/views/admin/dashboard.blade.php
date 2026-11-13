@@ -5,7 +5,7 @@
 @section('page_data', '{ sidebar: false }')
 @section('escape_action', 'sidebar = false')
 @section('year_label')
-Tahun Ajaran {{ $tahunAjaran }}
+Tahun Ajaran {{ $tahunAjaran ?? '-' }}
 @endsection
 
 @section('content')
@@ -14,14 +14,14 @@ Tahun Ajaran {{ $tahunAjaran }}
             {{-- Kartu selamat datang --}}
             <section class="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Selamat Datang, {{ $adminName }}</h1>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Selamat Datang, {{ $adminName ?? '-' }}</h1>
                     <p class="mt-1.5 text-sm text-slate-500">Sistem Informasi Laporan Siswa MI Internasional &amp; SMK Nusantara.</p>
                 </div>
                 <span class="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600">
                     <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    Sesi Aktif
+                    {{ $statusSesi ?? 'Sesi Aktif' }}
                 </span>
             </section>
 
@@ -41,7 +41,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                                 </svg>
                             </span>
                         </div>
-                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalUnit }}</p>
+                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalUnit ?? 0 }}</p>
                         <p class="mt-3 text-[11px] text-slate-500">MI Internasional &amp; SMK Nusantara</p>
                     </div>
 
@@ -55,7 +55,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                                 </svg>
                             </span>
                         </div>
-                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalPendidikStaf }}</p>
+                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalPendidikStaf ?? 0 }}</p>
                         <p class="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
@@ -74,11 +74,11 @@ Tahun Ajaran {{ $tahunAjaran }}
                                 </svg>
                             </span>
                         </div>
-                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalSiswa }}</p>
+                        <p class="mt-3 text-4xl font-bold text-brand">{{ $totalSiswa ?? 0 }}</p>
                         <p class="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
-                            <span>SMK: {{ $siswaSmk }} Siswa</span>
+                            <span>SMK: {{ $siswaSmk ?? 0 }} Siswa</span>
                             <span class="h-3 w-px bg-slate-300"></span>
-                            <span>MI: {{ $siswaMi }} Siswa</span>
+                            <span>MI: {{ $siswaMi ?? 0 }} Siswa</span>
                         </p>
                     </div>
                 </div>
@@ -152,7 +152,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                     </svg>
                     Data terintegrasi secara terpusat untuk Yayasan Nurun 'Alannur (MI Internasional &amp; SMK Nusantara).
                 </p>
-                <span class="text-slate-400">Sistem versi {{ $versi }}</span>
+                <span class="text-slate-400">Sistem versi {{ $versi ?? '-' }}</span>
             </section>
         </main>
 @endsection

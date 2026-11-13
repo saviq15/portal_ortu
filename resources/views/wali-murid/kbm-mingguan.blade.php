@@ -5,7 +5,7 @@
 @section('page_title_class', 'text-base text-slate-900')
 @section('page_data', 'kbmPage()')
 @section('escape_action', 'sidebar = false; tutup()')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex')
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-sm text-slate-900')
@@ -21,15 +21,15 @@
             {{-- ============ KARTU SISWA ============ --}}
             <section class="flex flex-col gap-3 rounded-xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-4">
-                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-amber-300 bg-amber-50 text-sm text-amber-700">AF</div>
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-amber-300 bg-amber-50 text-sm text-amber-700">{{ $siswa->inisial ?? '-' }}</div>
                     <div>
-                        <p class="text-base text-slate-900">Ahmad Fauzi <span class="mx-1 text-slate-300">|</span> X TKJ 1 - SMK Nusantara</p>
-                        <p class="mt-0.5 text-[11px] text-slate-500">NIS: 20261001 &bull; Status: Siswa Aktif</p>
+                        <p class="text-base text-slate-900">{{ $siswa->nama ?? '-' }} <span class="mx-1 text-slate-300">|</span> {{ $siswa->kelas ?? '-' }} - {{ $siswa->sekolah ?? '-' }}</p>
+                        <p class="mt-0.5 text-[11px] text-slate-500">NIS: {{ $siswa->nis ?? '-' }} &bull; Status: {{ $siswa->status ?? '-' }}</p>
                     </div>
                 </div>
                 <span class="inline-flex w-fit items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3.5 py-1.5 text-xs text-sky-700">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-                    Wali Kelas: Bapak Heri Susanto
+                    Wali Kelas: Bapak {{ $waliKelas->nama ?? '-' }}
                 </span>
             </section>
 
@@ -43,8 +43,9 @@
                     <div class="relative w-40">
                         <select x-model="bulan" aria-label="Pilih bulan"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-3 pl-4 pr-9 text-sm text-slate-800 shadow-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
-                            <option>September 2026</option>
-                            <option>Oktober 2026</option>
+                            @foreach(($bulanOptions ?? []) as $bulanOption)
+                                <option value="{{ $bulanOption }}">{{ $bulanOption }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -53,10 +54,9 @@
                     <div class="relative w-36">
                         <select x-model="minggu" aria-label="Pilih minggu"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-3 pl-4 pr-9 text-sm text-slate-800 shadow-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
-                            <option value="1">Minggu ke-1</option>
-                            <option value="2">Minggu ke-2</option>
-                            <option value="3">Minggu ke-3</option>
-                            <option value="4">Minggu ke-4</option>
+                            @foreach(($mingguOptions ?? []) as $mingguOption)
+                                <option value="{{ $mingguOption }}">Minggu ke-{{ $mingguOption }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -192,9 +192,9 @@
             <div class="flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Logbook Digital Terpadu Yayasan Nurun 'Alannur (MI &amp; SMK)
+                    Logbook Digital Terpadu {{ $namaYayasan ?? '-' }} ({{ $unitPendidikan ?? '-' }})
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -314,7 +314,7 @@
                     <dl class="divide-y divide-red-100 rounded-lg border border-red-100 bg-red-50/70 px-4 text-xs">
                         <div class="flex items-center justify-between gap-4 py-2.5">
                             <dt class="uppercase tracking-wider text-slate-500">Hari / Tanggal:</dt>
-                            <dd class="text-right text-slate-900" x-text="sel.hari + ', ' + sel.tgl + ' ' + sel.bln.replace('Okt', 'Okt') + ' 2026 (' + sel.jam.replace(' - ', ' - ') + ')'"></dd>
+                            <dd class="text-right text-slate-900" x-text="sel.hari + ', ' + sel.tgl + ' ' + sel.bln + ' ' + sel.tahun + ' (' + sel.jam + ')'"></dd>
                         </div>
                         <div class="flex items-center justify-between gap-4 py-2.5">
                             <dt class="uppercase tracking-wider text-slate-500">Mata Pelajaran:</dt>
@@ -337,11 +337,9 @@
                         <select id="alasan" name="alasan" required x-model="form.alasan"
                                 class="block w-full appearance-none rounded-lg border border-slate-300 bg-white py-3 pl-3.5 pr-10 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                             <option value="">Pilih kendala...</option>
-                            <option>Anak sakit (ada surat dokter)</option>
-                            <option>Izin keperluan keluarga</option>
-                            <option>Kendala transportasi / cuaca</option>
-                            <option>Salah input presensi oleh guru</option>
-                            <option>Lainnya</option>
+                            @foreach(($alasanKoreksiOptions ?? []) as $alasanKoreksi)
+                                <option value="{{ $alasanKoreksi }}">{{ $alasanKoreksi }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -379,7 +377,7 @@
                     {{-- Catatan --}}
                     <div class="mt-5 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
                         <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p>Laporan sanggahan akan diverifikasi langsung oleh Bapak Heri Susanto selaku Wali Kelas X TKJ 1 sebelum status presensi diperbarui di sistem.</p>
+                        <p>Laporan sanggahan akan diverifikasi langsung oleh Bapak {{ $waliKelas->nama ?? '-' }} selaku Wali Kelas {{ $waliKelas->kelas ?? '-' }} sebelum status presensi diperbarui di sistem.</p>
                     </div>
                 </div>
             </template>
@@ -416,33 +414,9 @@
             berkas: null, seret: false, galat: '',
             toast: false, pesan: '', toastTimer: null,
 
-            bulan: 'Oktober 2026',
-            minggu: '4',
-
-            // Data dummy (frontend saja)
-            data: {
-                'Oktober 2026|4': {
-                    rentang: '26 - 30 Oktober 2026', sesi: 5, update: 'Rabu, 28 Okt 2026 • 12:45 WIB',
-                    baris: [
-                        { id: 1, tgl: '26', hari: 'Senin',  bln: 'Okt', jam: '07:30 - 09:45', mapel: 'Dasar Jaringan',   guru: 'Bapak Heri Susanto', materi: 'Pengenalan Topologi Star & Ring', status: 'Tuntas',          nilai: 85, catatan: 'Mampu mempraktikkan crimping kabel dengan sangat baik.', hadir: 'Hadir', tanggapan: false, sanggahan: false },
-                        { id: 2, tgl: '27', hari: 'Selasa', bln: 'Okt', jam: '10:15 - 11:45', mapel: 'Matematika',       guru: 'Ibu Ratna',          materi: 'Aljabar Linear',                  status: 'Perlu Bimbingan', nilai: 60, catatan: 'Masih kebingungan dalam metode substitusi. Mohon dipantau latihan soal di rumah.', hadir: 'Hadir', tanggapan: false, sanggahan: false },
-                        { id: 3, tgl: '28', hari: 'Rabu',   bln: 'Okt', jam: '08:15 - 10:30', mapel: 'Bahasa Indonesia', guru: 'Bapak Anton',        materi: 'Teks Laporan Hasil Observasi',    status: 'Belum Dinilai',   nilai: null, catatan: '-', hadir: 'Alpa', tanggapan: false, sanggahan: false },
-                    ],
-                },
-                'Oktober 2026|3': {
-                    rentang: '19 - 23 Oktober 2026', sesi: 5, update: 'Jumat, 23 Okt 2026 • 13:10 WIB',
-                    baris: [
-                        { id: 11, tgl: '19', hari: 'Senin',  bln: 'Okt', jam: '07:30 - 09:45', mapel: 'Dasar Jaringan',         guru: 'Bapak Heri Susanto', materi: 'Model OSI dan TCP/IP',      status: 'Tuntas', nilai: 82, catatan: 'Aktif bertanya dan cepat memahami lapisan jaringan.', hadir: 'Hadir', tanggapan: false, sanggahan: false },
-                        { id: 12, tgl: '21', hari: 'Rabu',   bln: 'Okt', jam: '08:15 - 10:30', mapel: 'Pendidikan Agama Islam', guru: 'Ustadz Ahmad Fauzi', materi: 'Hafalan Surat Al-Mulk',     status: 'Tuntas', nilai: 88, catatan: 'Tajwid sudah baik, makhraj perlu dilatih lagi.',        hadir: 'Hadir', tanggapan: false, sanggahan: false },
-                    ],
-                },
-                'September 2026|4': {
-                    rentang: '21 - 25 September 2026', sesi: 5, update: 'Jumat, 25 Sep 2026 • 12:30 WIB',
-                    baris: [
-                        { id: 21, tgl: '22', hari: 'Selasa', bln: 'Sep', jam: '10:15 - 11:45', mapel: 'Matematika', guru: 'Ibu Ratna', materi: 'Persamaan Linear', status: 'Tuntas', nilai: 78, catatan: 'Sudah mampu menyelesaikan soal dasar dengan teliti.', hadir: 'Hadir', tanggapan: false, sanggahan: false },
-                    ],
-                },
-            },
+            bulan: @json($bulanTerpilih ?? ''),
+            minggu: @json($mingguTerpilih ?? ''),
+            data: @json($jurnalKbm ?? []),
 
             get periode() {
                 return this.data[this.bulan + '|' + this.minggu] || { rentang: '-', sesi: 0, update: '-', baris: [] };

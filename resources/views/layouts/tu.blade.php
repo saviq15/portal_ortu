@@ -21,13 +21,13 @@ x-show="@yield('shell_visibility', 'true')"
 @section('topbar')
     @php
         $tuUser = \Illuminate\Support\Facades\Auth::user();
-        $tuName = $tuUser->name;
-        $tuNameParts = array_slice(preg_split('/\s+/', trim($tuName)), 0, 2);
+        $tuName = $tuUser?->name ?? '-';
+        $tuNameParts = array_slice(preg_split('/\s+/', trim($tuName)) ?: [], 0, 2);
         $tuInitials = mb_strtoupper(implode('', array_map(
             fn ($part) => mb_substr($part, 0, 1),
             $tuNameParts
-        )));
-        $tuRole = $tuUser->role === 'pihak_yayasan' ? 'Staf TU' : $tuUser->role;
+        ))) ?: '-';
+        $tuRole = $tuUser?->role === 'pihak_yayasan' ? 'Staf TU' : ($tuUser?->role ?? '-');
     @endphp
     <header class="tu-topbar">
         <div class="flex items-center gap-3">
@@ -42,7 +42,7 @@ x-show="@yield('shell_visibility', 'true')"
         <div class="flex items-center gap-3 sm:gap-4">
             <span class="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                @yield('year_label', 'Tahun Ajaran 2026/2027')
+                @yield('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
             </span>
             <span class="hidden h-8 w-px bg-slate-200 sm:block"></span>
             <div class="flex items-center gap-3">

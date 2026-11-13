@@ -1,9 +1,11 @@
 @extends('layouts.tu')
 
+@php($tuName = \Illuminate\Support\Facades\Auth::user()?->name ?? '-')
+
 @section('title', 'Manajemen Transaksi | SIAKAD Panel')
 @section('page_title', 'Manajemen Transaksi')
 @section('page_data', 'kasirPage()')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-sm text-slate-900')
 @section('profile_role_class', 'text-[11px] text-slate-500')
@@ -208,9 +210,9 @@ view === 'kasir'
             <div class="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Pembayaran &amp; Rekapitulasi Keuangan terintegrasi Yayasan Nurun 'Alannur.
+                    Sistem Pembayaran &amp; Rekapitulasi Keuangan terintegrasi {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -254,9 +256,9 @@ view === 'kasir'
                         <img src="{{ asset('images/logo.png') }}" alt="Logo"
                              class="absolute left-0 top-1/2 hidden h-14 w-14 -translate-y-1/2 object-contain sm:block">
                         <div class="text-center sm:px-20">
-                            <h2 class="text-lg uppercase tracking-wide text-slate-900">Yayasan Pendidikan Nurun 'Alannur</h2>
+                            <h2 class="text-lg uppercase tracking-wide text-slate-900">{{ $namaYayasan ?? '-' }}</h2>
                             <p class="mt-1 text-sm uppercase text-slate-900" x-text="kw.unit"></p>
-                            <p class="mt-1 text-[11px] text-slate-700">Kapencar RT. 10 RW. 09, Kecamatan Kertek, Kabupaten Wonosobo, Jawa Tengah 56371</p>
+                            <p class="mt-1 text-[11px] text-slate-700">{{ $alamatSekolah ?? '-' }}</p>
                         </div>
                     </div>
 
@@ -295,20 +297,20 @@ view === 'kasir'
                         <div>
                             <p class="text-[11px] uppercase tracking-wider text-slate-500">Jumlah Nominal:</p>
                             <p class="mt-2 inline-block border-4 border-slate-900 bg-white px-6 py-3 text-2xl text-slate-900" x-text="'Rp ' + rp(kw.nominal) + ',-'"></p>
-                            <p class="mt-3 text-[11px] text-slate-500">* Pembayaran telah divalidasi lunas oleh sistem kasir TU.</p>
+                            <p class="mt-3 text-[11px] text-slate-500">* Pembayaran telah divalidasi <span x-text="kw.status ?? '-'"></span> oleh sistem kasir TU.</p>
                         </div>
 
                         <div class="text-center text-sm text-slate-900 sm:w-56">
                             <p>Penerima / Staf TU,</p>
                             <div class="mx-auto mt-4 flex h-6 w-44 items-center justify-center border border-dashed border-slate-300 text-[9px] uppercase tracking-widest text-slate-300">[Tanda Tangan / Stempel]</div>
-                            <p class="mt-8 underline">( Ibu Nur Fina )</p>
-                            <p class="mt-1 text-[11px] text-slate-500">NIP / ID: TU-202604</p>
+                            <p class="mt-8 underline">( Ibu {{ $tuName ?? '-' }} )</p>
+                            <p class="mt-1 text-[11px] text-slate-500">NIP / ID: {{ $tuId ?? '-' }}</p>
                         </div>
                     </div>
 
                     {{-- Footer kwitansi --}}
                     <div class="mt-8 flex flex-col gap-1 border-t border-slate-200 pt-3 text-[10px] text-slate-400 sm:flex-row sm:justify-between">
-                        <p>Dokumen Resmi SIAKAD Panel v2.4.0 • Bukti sah pembayaran</p>
+                        <p>Dokumen Resmi SIAKAD Panel v{{ $versi ?? '-' }} • Bukti sah pembayaran</p>
                         <p x-text="'Dicetak otomatis pada: ' + kw.cetak"></p>
                     </div>
                 </div>
@@ -372,32 +374,11 @@ view === 'kasir'
             jenis: 'SPP Bulanan', nominal: '', ket: '',
             cariTrx: '',
 
-            daftarJenis: ['SPP Bulanan', 'Setor Tabungan', 'Seragam Olahraga', 'Uang Kegiatan'],
+            daftarJenis: @json($jenisPembayaranOptions ?? []),
 
-            // Data dummy (frontend saja)
-            daftarSiswa: [
-                { nis: '20261001', nama: 'Ahmad Fauzi',    kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara' },
-                { nis: '20261002', nama: 'Budi Santoso',   kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara' },
-                { nis: '20261003', nama: 'Citra Lestari',  kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara' },
-                { nis: '20261004', nama: 'Dedi Kurniawan', kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara' },
-                { nis: '20262015', nama: 'Siti Aisyah',    kelas: 'Kelas 3',       unit: 'MI Internasional' },
-                { nis: '20262016', nama: 'Umar Faruq',     kelas: 'Kelas 3',       unit: 'MI Internasional' },
-            ],
+            daftarSiswa: @json($siswaOptions ?? []),
 
-            transaksi: [
-                { ref: 'TRX-001', label: 'Hari ini', waktu: '09:15 WIB', lengkap: '29 Oktober 2026, 09:15 WIB', cetak: '29/10/2026 09:15 WIB',
-                  nis: '20261001', nama: 'Ahmad Fauzi', kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara',
-                  jenis: 'SPP Bulan Oktober', detail: 'Pembayaran Reguler', nada: 'hijau',
-                  untuk: 'SPP Bulan Oktober 2026', untukKet: '(Pembayaran Reguler - Tahun Ajaran 2026/2027)', ket: '', nominal: 250000 },
-                { ref: 'TRX-002', label: 'Hari ini', waktu: '09:30 WIB', lengkap: '29 Oktober 2026, 09:30 WIB', cetak: '29/10/2026 09:30 WIB',
-                  nis: '20262015', nama: 'Siti Aisyah', kelas: 'Kelas 3', unit: 'MI Internasional',
-                  jenis: 'Setor Tabungan', detail: 'Buku Tabungan MI #2015', nada: 'hijau',
-                  untuk: 'Setor Tabungan', untukKet: '(Buku Tabungan MI #2015 - Tahun Ajaran 2026/2027)', ket: '', nominal: 50000 },
-                { ref: 'TRX-000', label: 'Kemarin', waktu: '14:20 WIB', lengkap: '28 Oktober 2026, 14:20 WIB', cetak: '28/10/2026 14:20 WIB',
-                  nis: '20261002', nama: 'Budi Santoso', kelas: 'Kelas X TKJ 1', unit: 'SMK Nusantara',
-                  jenis: 'Seragam Olahraga', detail: 'Cicilan 1 dari 2', nada: 'kuning',
-                  untuk: 'Seragam Olahraga', untukKet: '(Cicilan 1 dari 2 - Tahun Ajaran 2026/2027)', ket: '', nominal: 150000 },
-            ],
+            transaksi: @json($riwayatTransaksi ?? []),
 
             get hasilCari() {
                 const q = this.cari.toLowerCase().trim();
@@ -431,7 +412,7 @@ view === 'kasir'
                 const jam = pad(sekarang.getHours()) + ':' + pad(sekarang.getMinutes());
                 const tgl = sekarang.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const tglPendek = pad(sekarang.getDate()) + '/' + pad(sekarang.getMonth() + 1) + '/' + tahun;
-                const ta = ' - Tahun Ajaran 2026/2027)';
+                const ta = ' - Tahun Ajaran ' + @json($tahunAjaran ?? '-') + ')';
 
                 let jenis, detail, untuk;
                 if (this.jenis === 'SPP Bulanan')      { jenis = 'SPP Bulan ' + bulan; detail = 'Pembayaran Reguler'; untuk = jenis + ' ' + tahun; }

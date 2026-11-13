@@ -130,7 +130,7 @@
                     <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Jurnal dan Penilaian terintegrasi secara otomatis ke Rapor Digital Siswa.
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -152,47 +152,12 @@ document.addEventListener('alpine:init', () => {
             toast: false,
             toastTimer: null,
 
-            kelas: 'X TKJ 1',
-            dimensi: 'Bergotong Royong',
-            daftarKelas: ['X TKJ 1', 'X TKJ 2', 'XI TKR 1', 'XI TKR 2'],
-            daftarDimensi: [
-                'Beriman, Bertakwa kepada Tuhan YME & Berakhlak Mulia',
-                'Berkebinekaan Global',
-                'Bergotong Royong',
-                'Mandiri',
-                'Bernalar Kritis',
-                'Kreatif',
-            ],
-
-            predikat: [
-                { kode: 'SB', label: 'Sangat Baik (SB)' },
-                { kode: 'B',  label: 'Baik (B)' },
-                { kode: 'C',  label: 'Cukup (C)' },
-                { kode: 'K',  label: 'Kurang (K)' },
-            ],
-
-            // Data dummy (frontend saja)
-            data: {
-                'X TKJ 1': [
-                    { nis: '20261001', nama: 'Ahmad Fauzi',   predikat: 'SB', deskripsi: 'Siswa sangat aktif membantu teman saat praktikum jaringan.' },
-                    { nis: '20261002', nama: 'Budi Santoso',  predikat: 'C',  deskripsi: 'Perlu bimbingan lebih dalam pembagian tugas kelompok.' },
-                    { nis: '20261003', nama: 'Citra Lestari', predikat: 'B',  deskripsi: '' },
-                ],
-                'X TKJ 2': [
-                    { nis: '20261011', nama: 'Muhammad Rizki', predikat: 'B',  deskripsi: '' },
-                    { nis: '20261012', nama: 'Siti Aisyah',    predikat: 'SB', deskripsi: 'Selalu memimpin doa dan menjaga kebersihan lab.' },
-                    { nis: '20261013', nama: 'Zainal Abidin',  predikat: 'B',  deskripsi: '' },
-                ],
-                'XI TKR 1': [
-                    { nis: '20251021', nama: 'Hasan Basri',    predikat: 'SB', deskripsi: 'Rajin membantu teman di bengkel.' },
-                    { nis: '20251022', nama: 'Nur Khalimah',   predikat: 'B',  deskripsi: '' },
-                    { nis: '20251023', nama: 'Fikri Ramadhan', predikat: 'C',  deskripsi: 'Perlu pembiasaan disiplin waktu.' },
-                ],
-                'XI TKR 2': [
-                    { nis: '20251031', nama: 'Abdul Rahman',    predikat: 'B',  deskripsi: '' },
-                    { nis: '20251032', nama: 'Fatimah Azzahra', predikat: 'SB', deskripsi: '' },
-                ],
-            },
+            kelas: @json($kelasSikapTerpilih ?? ''),
+            dimensi: @json($dimensiSikapTerpilih ?? ''),
+            daftarKelas: @json($kelasOptions ?? []),
+            daftarDimensi: @json($dimensiOptions ?? []),
+            predikat: @json($predikatOptions ?? []),
+            data: @json($catatanSikap ?? []),
 
             get siswa() {
                 return this.data[this.kelas] || [];

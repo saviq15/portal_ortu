@@ -15,6 +15,16 @@
 @endsection
 
 @section('topbar')
+    @php
+        $guruUser = \Illuminate\Support\Facades\Auth::user();
+        $guruName = $guruUser?->name ?? '-';
+        $guruNameParts = array_slice(preg_split('/\s+/', trim($guruName)) ?: [], 0, 2);
+        $guruInitials = mb_strtoupper(implode('', array_map(
+            fn ($part) => mb_substr($part, 0, 1),
+            $guruNameParts
+        ))) ?: '-';
+        $guruRoleLabel = $guruUser?->role === 'wali_kelas' ? 'Wali Kelas' : 'Guru';
+    @endphp
     <header class="guru-topbar">
         <div class="flex items-center gap-3">
             <button type="button" @click="sidebar = true" aria-label="Buka menu"
@@ -24,19 +34,10 @@
             <h2 class="text-base text-slate-900">@yield('page_title')</h2>
         </div>
 
-        @php
-            $guruName = auth()->user()->name;
-            $guruNameParts = array_slice(preg_split('/\s+/', trim($guruName)), 0, 2);
-            $guruInitials = mb_strtoupper(implode('', array_map(
-                fn ($part) => mb_substr($part, 0, 1),
-                $guruNameParts
-            )));
-            $guruRoleLabel = auth()->user()->role === 'wali_kelas' ? 'Wali Kelas' : 'Guru';
-        @endphp
         <div class="flex items-center gap-3 sm:gap-4">
             <span class="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                Tahun Ajaran 2026/2027
+                Tahun Ajaran {{ $tahunAjaran ?? '-' }}
             </span>
             <span class="hidden h-8 w-px bg-slate-200 sm:block"></span>
             <div class="flex items-center gap-3">

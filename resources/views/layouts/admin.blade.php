@@ -17,13 +17,13 @@
 @section('topbar')
     @php
         $adminUser = \Illuminate\Support\Facades\Auth::user();
-        $adminName = $adminUser->name;
-        $adminNameParts = array_slice(preg_split('/\s+/', trim($adminName)), 0, 2);
+        $adminName = $adminUser?->name ?? '-';
+        $adminNameParts = array_slice(preg_split('/\s+/', trim($adminName)) ?: [], 0, 2);
         $adminInitials = mb_strtoupper(implode('', array_map(
             fn ($part) => mb_substr($part, 0, 1),
             $adminNameParts
         )));
-        $adminRole = $adminUser->role === 'admin' ? 'Super Administrator' : $adminUser->role;
+        $adminRole = $adminUser?->role === 'admin' ? 'Super Administrator' : ($adminUser?->role ?? '-');
     @endphp
     <header class="admin-topbar">
         <div class="flex items-center gap-3">
@@ -37,7 +37,7 @@
         <div class="flex items-center gap-3 sm:gap-4">
             <span class="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                @yield('year_label', 'Tahun Ajaran 2026/2027 - Ganjil')
+                @yield('year_label', 'Tahun Ajaran -')
             </span>
             <span class="hidden h-8 w-px bg-slate-200 sm:block"></span>
             <div class="flex items-center gap-3">

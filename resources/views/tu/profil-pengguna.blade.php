@@ -1,9 +1,19 @@
 @extends('layouts.tu')
 
+@php
+    $tuUserForPage = \Illuminate\Support\Facades\Auth::user();
+    $tuName = $tuUserForPage?->name ?? '-';
+    $tuNameParts = array_slice(preg_split('/\s+/', trim($tuName)) ?: [], 0, 2);
+    $tuInitials = mb_strtoupper(implode('', array_map(
+        fn ($part) => mb_substr($part, 0, 1),
+        $tuNameParts
+    ))) ?: '-';
+@endphp
+
 @section('title', 'Pengaturan Akun | SIAKAD Panel')
 @section('page_title', 'Pengaturan Akun')
 @section('page_data', 'profilPage()')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-sm text-slate-900')
 @section('profile_role_class', 'text-[11px] text-slate-500')
@@ -22,7 +32,7 @@
             </div>
 
             <div class="mt-8 grid grid-cols-1 items-start gap-6 lg:grid-cols-[1.2fr_1fr]">
-
+                {{-- {{ route('profile.update') }} --}}
                 {{-- ============ KARTU DATA PRIBADI ============ --}}
                 <form action="#" method="POST" @submit.prevent="simpanProfil()"
                       class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
@@ -30,22 +40,22 @@
 
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <h3 class="text-lg text-slate-900">Data Pribadi</h3>
-                        <span class="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] text-emerald-700">Akun Terverifikasi</span>
+                        <span class="rounded-full border px-2.5 py-0.5 text-[11px] {{ ($statusAkunWarna ?? 'aktif') === 'aktif' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-600' }}">{{ $statusAkun ?? '-' }}</span>
                     </div>
 
                     {{-- Kartu identitas --}}
                     <div class="mt-6 flex items-center gap-4 rounded-lg border border-slate-100 bg-slate-50/70 px-5 py-4">
-                        <div class="flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">NF</div>
+                        <div class="flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">{{ $tuInitials ?? '-' }}</div>
                         <div>
-                            <p class="text-base text-slate-900">Ibu Nur Fina</p>
-                            <p class="mt-0.5 text-xs text-slate-600">Staf Tata Usaha - Yayasan Nurun 'Alannur</p>
+                            <p class="text-base text-slate-900">Ibu {{ $tuName ?? '-' }}</p>
+                            <p class="mt-0.5 text-xs text-slate-600">{{ $tuJabatan ?? '-' }}</p>
                             <div class="mt-2 flex flex-wrap items-center gap-2.5 text-[11px]">
-                                <span class="inline-flex items-center gap-1.5 rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-emerald-700">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                    Aktif Kepegawaian TU
+                                <span class="inline-flex items-center gap-1.5 rounded border px-2 py-0.5 {{ ($statusKepegawaianWarna ?? 'aktif') === 'aktif' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-600' }}">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ ($statusKepegawaianWarna ?? 'aktif') === 'aktif' ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                                    {{ $statusKepegawaian ?? '-' }}
                                 </span>
                                 <span class="text-slate-300">&bull;</span>
-                                <span class="text-slate-500">Loket Kasir #01</span>
+                                <span class="text-slate-500">{{ $loketKasir ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -56,7 +66,7 @@
                         <div>
                             <label for="nama" class="mb-2 block text-[11px] uppercase tracking-wider text-slate-600">Nama Lengkap</label>
                             <div class="relative">
-                                <input id="nama" name="nama" type="text" value="Ibu Nur Fina" readonly
+                                <input id="nama" name="nama" type="text" value="Ibu {{ $tuName ?? '-' }}" readonly
                                        class="block w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 py-3 pl-4 pr-10 text-sm text-slate-700 focus:outline-none">
                                 <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
@@ -69,7 +79,7 @@
                         <div>
                             <label for="nip" class="mb-2 block text-[11px] uppercase leading-snug tracking-wider text-slate-600">Nomor Induk Pegawai<br>(NIP/NIK)</label>
                             <div class="relative">
-                                <input id="nip" name="nip" type="text" value="19921105003" readonly
+                                <input id="nip" name="nip" type="text" value="{{ $tuNip ?? '-' }}" readonly
                                        class="block w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 py-3 pl-4 pr-10 text-sm text-slate-700 focus:outline-none">
                                 <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
@@ -165,9 +175,9 @@
             <div class="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Otentikasi dan Manajemen Tata Usaha terintegrasi Yayasan Nurun 'Alannur.
+                    Sistem Otentikasi dan Manajemen Tata Usaha terintegrasi {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -190,12 +200,7 @@
             pesan: '',
             toastTimer: null,
 
-            // Data dummy (frontend saja)
-            profil: {
-                email: 'admin.tu@nurunalannur.sch.id',
-                telepon: '085712345678',
-                diperbarui: '25 Oktober 2026',
-            },
+            profil: @json($profilTu ?? ['email' => '', 'telepon' => '', 'diperbarui' => '-']),
             sandi: { lama: '', baru: '', konfirmasi: '' },
 
             get tidakCocok() {

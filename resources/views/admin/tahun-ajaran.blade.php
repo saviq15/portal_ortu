@@ -5,7 +5,7 @@
 @section('page_data', 'tahunAjaranPage()')
 @section('escape_action', 'modal = false; sidebar = false')
 @section('year_label')
-Tahun Ajaran {{ $tahunAjaran }}
+Tahun Ajaran {{ $tahunAjaran ?? '-' }}
 @endsection
 
 @section('content')
@@ -31,8 +31,9 @@ Tahun Ajaran {{ $tahunAjaran }}
                     <select x-model="filterStatus"
                             class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-3 pr-9 text-sm text-slate-700 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                         <option value="">-- Semua Status --</option>
-                        <option>Aktif</option>
-                        <option value="-">-</option>
+                        @foreach(($periodStatuses ?? ['Aktif', '-']) as $status)
+                            <option value="{{ $status }}">{{ $status }}</option>
+                        @endforeach
                     </select>
                     <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -98,10 +99,10 @@ Tahun Ajaran {{ $tahunAjaran }}
 
                 {{-- Footer tabel --}}
                 <div class="flex flex-col gap-3 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-sm text-slate-500">Menampilkan {{ $periods->firstItem() ?? 0 }}-{{ $periods->lastItem() ?? 0 }} dari {{ $periods->total() }} periode</p>
+                    <p class="text-sm text-slate-500">Menampilkan {{ isset($periods) && is_object($periods) && method_exists($periods, 'firstItem') ? ($periods->firstItem() ?? 0) : 0 }}-{{ isset($periods) && is_object($periods) && method_exists($periods, 'lastItem') ? ($periods->lastItem() ?? 0) : 0 }} dari {{ isset($periods) && is_object($periods) && method_exists($periods, 'total') ? $periods->total() : 0 }} periode</p>
                     <div class="flex items-center gap-2">
-                        <a href="{{ $periods->previousPageUrl() ?? '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-500 transition hover:bg-slate-50">Prev</a>
-                        <a href="{{ $periods->nextPageUrl() ?? '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50">Next</a>
+                        <a href="{{ isset($periods) && is_object($periods) && method_exists($periods, 'previousPageUrl') ? ($periods->previousPageUrl() ?? '#') : '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-500 transition hover:bg-slate-50">Prev</a>
+                        <a href="{{ isset($periods) && is_object($periods) && method_exists($periods, 'nextPageUrl') ? ($periods->nextPageUrl() ?? '#') : '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50">Next</a>
                     </div>
                 </div>
             </div>
@@ -112,7 +113,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                     <svg class="h-3.5 w-3.5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
                     Data terintegrasi secara terpusat untuk Yayasan Nurun 'Alannur (MI Internasional &amp; SMK Nusantara).
                 </p>
-                <span class="text-slate-400">Sistem versi 2.4.0</span>
+                <span class="text-slate-400">Sistem versi {{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -183,8 +184,9 @@ Tahun Ajaran {{ $tahunAjaran }}
                         <select id="semester" name="semester" required x-model="form.semester"
                                 class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-3.5 pr-10 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                             <option value="">Pilih Semester...</option>
-                            <option>Ganjil</option>
-                            <option>Genap</option>
+                            @foreach((count($semesters ?? []) > 0 ? $semesters : ['Ganjil', 'Genap']) as $semester)
+                                <option value="{{ $semester }}">{{ $semester }}</option>
+                            @endforeach
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -229,7 +231,7 @@ document.addEventListener('alpine:init', () => {
             filterStatus: '',
             form: { tahun: '', semester: '' },
 
-            periode: @js($periodRows),
+            periode: @json($periodRows ?? []),
 
             get filtered() {
                 const q = this.search.toLowerCase().trim();

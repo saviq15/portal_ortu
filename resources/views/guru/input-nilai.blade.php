@@ -117,8 +117,9 @@
                                                         :class="s.status === 'Tuntas'
                                                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700 focus:ring-emerald-200'
                                                             : 'border-red-200 bg-red-50 text-red-600 focus:ring-red-200'">
-                                                    <option value="Tuntas">Tuntas</option>
-                                                    <option value="Belum Tuntas">Belum Tuntas</option>
+                                                    @foreach(($statusNilaiOptions ?? ['Tuntas', 'Belum Tuntas']) as $statusNilai)
+                                                        <option value="{{ $statusNilai }}">{{ $statusNilai }}</option>
+                                                    @endforeach
                                                 </select>
                                                 <span class="pointer-events-none absolute inset-y-0 right-2.5 flex items-center"
                                                       :class="s.status === 'Tuntas' ? 'text-emerald-700' : 'text-red-600'">
@@ -157,7 +158,7 @@
                     <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Jurnal dan Penilaian terintegrasi secara otomatis ke Rapor Digital Siswa.
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -178,35 +179,14 @@ document.addEventListener('alpine:init', () => {
             sidebar: false,
             toast: false,
             toastTimer: null,
-            kkm: 70, // batas ketuntasan minimal
+            kkm: @json($kkmNilai ?? 70),
 
-            kelas: 'X TKJ 1',
-            mapel: 'Dasar Jaringan',
-            daftarKelas: ['X TKJ 1', 'X TKJ 2', 'XI TKR 1', 'XI TKR 2'],
-            daftarMapel: ['Dasar Jaringan', 'Mesin Otomotif', 'Pendidikan Agama Islam'],
+            kelas: @json($kelasNilaiTerpilih ?? ''),
+            mapel: @json($mataPelajaranNilaiTerpilih ?? ''),
+            daftarKelas: @json($kelasOptions ?? []),
+            daftarMapel: @json($mataPelajaranOptions ?? []),
 
-            // Data dummy (frontend saja)
-            data: {
-                'X TKJ 1': [
-                    { nis: '20261001', nama: 'Ahmad Fauzi',  kehadiran: 100, nilai: 85, status: 'Tuntas',       catatan: '' },
-                    { nis: '20261002', nama: 'Budi Santoso', kehadiran: 80,  nilai: 60, status: 'Belum Tuntas', catatan: 'Perlu remidi' },
-                    { nis: '20261003', nama: 'Citra Lestari', kehadiran: 100, nilai: 92, status: 'Tuntas',      catatan: '' },
-                ],
-                'X TKJ 2': [
-                    { nis: '20261011', nama: 'Muhammad Rizki',  kehadiran: 95,  nilai: 78, status: 'Tuntas', catatan: '' },
-                    { nis: '20261012', nama: 'Siti Aisyah',     kehadiran: 100, nilai: 88, status: 'Tuntas', catatan: '' },
-                    { nis: '20261013', nama: 'Zainal Abidin',   kehadiran: 90,  nilai: 82, status: 'Tuntas', catatan: '' },
-                ],
-                'XI TKR 1': [
-                    { nis: '20251021', nama: 'Hasan Basri',     kehadiran: 100, nilai: 90, status: 'Tuntas', catatan: '' },
-                    { nis: '20251022', nama: 'Nur Khalimah',    kehadiran: 85,  nilai: 74, status: 'Tuntas', catatan: '' },
-                    { nis: '20251023', nama: 'Fikri Ramadhan',  kehadiran: 92,  nilai: 68, status: 'Belum Tuntas', catatan: 'Perlu bimbingan' },
-                ],
-                'XI TKR 2': [
-                    { nis: '20251031', nama: 'Abdul Rahman',    kehadiran: 98,  nilai: 86, status: 'Tuntas', catatan: '' },
-                    { nis: '20251032', nama: 'Fatimah Azzahra', kehadiran: 100, nilai: 94, status: 'Tuntas', catatan: '' },
-                ],
-            },
+            data: @json($nilaiSiswa ?? []),
 
             get siswa() {
                 return this.data[this.kelas] || [];

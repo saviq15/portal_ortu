@@ -58,6 +58,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Route Backend Controller
     Route::get('/data/kelas', [KelasController::class, 'index'])->name('kelas.index');
+    Route::post('/data/kelas', [KelasController::class, 'store'])->name('kelas.store');
+    Route::put('/data/kelas/{kela}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/data/kelas/{kela}', [KelasController::class, 'destroy'])->name('kelas.destroy');
     Route::get('/data/pengguna', [UserController::class, 'index'])->name('pengguna.index');
     Route::get('/log-aktivitas', [LogAktivitasController::class, 'index'])->name('log-aktivitas');
 });

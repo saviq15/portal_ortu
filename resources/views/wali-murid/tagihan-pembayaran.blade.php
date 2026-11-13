@@ -5,7 +5,7 @@
 @section('page_title_class', 'text-base font-bold text-slate-900')
 @section('page_data', 'tagihanPage()')
 @section('escape_action', 'sidebar = false; modal = false')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 sm:inline-flex')
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white')
 @section('profile_name_class', 'text-xs font-bold text-slate-900')
@@ -34,18 +34,18 @@
             {{-- Kartu siswa --}}
             <section class="flex flex-col gap-3 rounded-xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-4">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-xs font-bold text-blue-600">AF</div>
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-xs font-bold text-blue-600">{{ $siswa->inisial ?? '-' }}</div>
                     <div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <p class="text-sm font-bold text-slate-900">Ahmad Fauzi</p>
-                            <span class="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] text-slate-500">NIS: 20261001</span>
+                            <p class="text-sm font-bold text-slate-900">{{ $siswa->nama ?? '-' }}</p>
+                            <span class="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] text-slate-500">NIS: {{ $siswa->nis ?? '-' }}</span>
                         </div>
-                        <p class="mt-1 text-[11px] text-slate-500">Kelas X TKJ 1 &bull; SMK Nusantara &bull; Semester Ganjil 2026/2027</p>
+                        <p class="mt-1 text-[11px] text-slate-500">Kelas {{ $siswa->kelas ?? '-' }} &bull; {{ $siswa->sekolah ?? '-' }} &bull; Semester {{ $semester ?? '-' }} {{ $tahunAjaran ?? '-' }}</p>
                     </div>
                 </div>
-                <span class="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700">
+                <span @class(['inline-flex w-fit items-center gap-2 rounded-md border px-3.5 py-1.5 text-xs font-bold', 'border-emerald-300 bg-emerald-50 text-emerald-700' => ($ringkasanKeuangan->statusAdministrasi ?? '') === 'Tertib Administrasi', 'border-amber-300 bg-amber-50 text-amber-700' => ($ringkasanKeuangan->statusAdministrasi ?? '') !== 'Tertib Administrasi'])>
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Status Administrasi: Tertib Administrasi
+                    Status Administrasi: {{ $ringkasanKeuangan->statusAdministrasi ?? '-' }}
                 </span>
             </section>
 
@@ -53,23 +53,23 @@
             <section class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
                 {{-- Status SPP --}}
-                <div class="flex flex-col rounded-xl border-2 border-green-500 bg-white p-6 shadow-sm">
+                <div @class(['flex flex-col rounded-xl border-2 bg-white p-6 shadow-sm', 'border-green-500' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'border-red-500' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>
                     <div class="flex items-start justify-between">
                         <div>
                             <p class="text-[11px] font-medium uppercase tracking-wider text-slate-600">Status SPP Saat Ini</p>
-                            <p class="mt-3 flex items-center gap-2 text-xl font-bold text-green-600">
-                                LUNAS (Bulan Oktober 2026)
+                            <p @class(['mt-3 flex items-center gap-2 text-xl font-bold', 'text-green-600' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'text-red-600' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>
+                                {{ $ringkasanKeuangan->statusSpp ?? '-' }} (Bulan {{ $ringkasanKeuangan->periodeSpp ?? '-' }})
                                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
                             </p>
-                            <p class="mt-2 text-sm text-slate-600">Terima kasih, tidak ada tunggakan SPP berjalan.</p>
+                            <p class="mt-2 text-sm text-slate-600">{{ $ringkasanKeuangan->pesanStatusSpp ?? '-' }}</p>
                         </div>
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-green-600">
+                        <span @class(['flex h-10 w-10 shrink-0 items-center justify-center rounded-lg', 'bg-emerald-50 text-green-600' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'bg-red-50 text-red-600' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                         </span>
                     </div>
                     <div class="mt-auto flex flex-col gap-1 border-t border-slate-100 pt-4 text-[11px] sm:flex-row sm:items-center sm:justify-between" style="margin-top:1.5rem">
-                        <p class="text-slate-500">Periode SPP berikutnya: <span class="font-bold text-slate-900">November 2026</span></p>
-                        <p class="font-bold text-green-600">Jatuh Tempo: 10 Nov 2026</p>
+                        <p class="text-slate-500">Periode SPP berikutnya: <span class="font-bold text-slate-900">{{ $ringkasanKeuangan->periodeBerikutnya ?? '-' }}</span></p>
+                        <p @class(['font-bold', 'text-green-600' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'text-red-600' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>Jatuh Tempo: {{ $ringkasanKeuangan->jatuhTempo ?? '-' }}</p>
                     </div>
                 </div>
 
@@ -78,16 +78,16 @@
                     <div class="flex items-start justify-between">
                         <div>
                             <p class="text-[11px] font-medium uppercase tracking-wider text-slate-600">Tagihan Lainnya</p>
-                            <p class="mt-3 text-xl font-bold text-slate-900">Rp 0</p>
-                            <p class="mt-2 max-w-sm text-sm text-slate-600">Tagihan seragam, buku, dan administrasi lainnya telah selesai.</p>
+                            <p class="mt-3 text-xl font-bold text-slate-900">Rp {{ $ringkasanKeuangan->totalTagihanLainnya ?? '-' }}</p>
+                            <p class="mt-2 max-w-sm text-sm text-slate-600">{{ $ringkasanKeuangan->pesanTagihanLainnya ?? '-' }}</p>
                         </div>
                         <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375"/></svg>
                         </span>
                     </div>
                     <div class="mt-auto flex flex-col gap-1 border-t border-slate-100 pt-4 text-[11px] sm:flex-row sm:items-center sm:justify-between" style="margin-top:1.5rem">
-                        <p class="text-slate-500">Biaya Tambahan Semester: <span class="font-bold text-slate-900">Nihil</span></p>
-                        <p class="text-slate-600">Terverifikasi Bagian Keuangan</p>
+                        <p class="text-slate-500">Biaya Tambahan Semester: <span class="font-bold text-slate-900">{{ $ringkasanKeuangan->biayaTambahanSemester ?? '-' }}</span></p>
+                        <p class="text-slate-600">{{ $ringkasanKeuangan->statusVerifikasi ?? '-' }}</p>
                     </div>
                 </div>
             </section>
@@ -104,8 +104,9 @@
                         <label for="tahun">Filter:</label>
                         <select id="tahun" x-model="tahun"
                                 class="rounded-md border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
-                            <option>Tahun 2026</option>
-                            <option>Tahun 2025</option>
+                            @foreach(($tahunTransaksiOptions ?? []) as $tahunTransaksiOption)
+                                <option value="{{ $tahunTransaksiOption }}">{{ $tahunTransaksiOption }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -132,8 +133,8 @@
                                     <td class="px-4 py-5"><span class="block max-w-[200px]" x-text="t.uraian"></span></td>
                                     <td class="px-4 py-5 font-bold text-slate-900" x-text="'Rp ' + rp(t.nominal)"></td>
                                     <td class="px-4 py-5">
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Lunas
+                                        <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium" :class="t.status === 'Lunas' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'">
+                                            <span class="h-1.5 w-1.5 rounded-full" :class="t.status === 'Lunas' ? 'bg-emerald-500' : 'bg-red-500'"></span><span x-text="t.status"></span>
                                         </span>
                                     </td>
                                     <td class="px-4 py-5 text-center">
@@ -161,16 +162,16 @@
             {{-- Bar info --}}
             <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-5 py-4 text-xs text-slate-700">
                 <svg class="h-5 w-5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Semua pembayaran diverifikasi secara otomatis oleh sistem Tata Usaha Yayasan Nurun 'Alannur.
+                Semua pembayaran diverifikasi secara otomatis oleh sistem Tata Usaha {{ $namaYayasan ?? '-' }}.
             </div>
 
             {{-- Info bar bawah --}}
             <div class="flex flex-col gap-2 pt-2 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Pembayaran Terpadu Yayasan Nurun 'Alannur (MI &amp; SMK)
+                    Sistem Pembayaran Terpadu {{ $namaYayasan ?? '-' }} ({{ $unitPendidikan ?? '-' }})
                 </p>
-                <span>SIAKAD v2.4.0</span>
+                <span>SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -216,10 +217,10 @@
                     </span>
                     <div class="leading-snug">
                         <p class="text-sm font-bold text-slate-900">Loket Keuangan &amp; Administrasi</p>
-                        <p class="mt-0.5 text-[11px] text-slate-600">Jam Operasional: Senin - Sabtu (07:30 - 14:00 WIB)</p>
+                        <p class="mt-0.5 text-[11px] text-slate-600">Jam Operasional: {{ $kontakTu->jamOperasional ?? '-' }}</p>
                         <p class="mt-1 flex items-center gap-1.5 text-[11px] font-bold text-green-600">
                             <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                            Telp / WhatsApp Resmi: +62 812-3456-7890
+                            Telp / WhatsApp Resmi: {{ $kontakTu->telepon ?? '-' }}
                         </p>
                     </div>
                 </div>
@@ -243,17 +244,15 @@
                 <select id="perihal" name="perihal" required x-model="form.perihal"
                         class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                     <option value="">Pilih perihal...</option>
-                    <option>Konfirmasi pembayaran SPP</option>
-                    <option>Kuitansi belum diterima</option>
-                    <option>Permohonan keringanan / cicilan</option>
-                    <option>Koreksi data tagihan</option>
-                    <option>Lainnya</option>
+                    @foreach(($perihalPesanOptions ?? []) as $perihalOption)
+                        <option value="{{ $perihalOption }}">{{ $perihalOption }}</option>
+                    @endforeach
                 </select>
 
                 {{-- Pesan --}}
                 <label for="pesan" class="mb-1.5 mt-4 block text-[11px] font-bold uppercase tracking-wider text-slate-800">Pesan / Keterangan *</label>
                 <textarea id="pesan" name="pesan" rows="4" required x-model="form.pesan"
-                          placeholder="Tuliskan pesan atau detail kendala keuangan ananda Ahmad Fauzi..."
+                          placeholder="Tuliskan pesan atau detail kendala keuangan ananda {{ $siswa->nama ?? '-' }}..."
                           class="block w-full resize-none rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"></textarea>
             </div>
 
@@ -287,20 +286,8 @@
             form: { perihal: '', pesan: '' },
             toast: false, pesanToast: '', toastTimer: null,
 
-            tahun: 'Tahun 2026',
-
-            // Data dummy (frontend saja)
-            data: {
-                'Tahun 2026': [
-                    { tgl: '25 Okt 2026', kode: 'TRX-001', uraian: 'SPP Bulan Oktober 2026',       nominal: 250000 },
-                    { tgl: '25 Sep 2026', kode: 'TRX-089', uraian: 'SPP Bulan September 2026',     nominal: 250000 },
-                    { tgl: '15 Jul 2026', kode: 'TRX-105', uraian: 'Biaya Daftar Ulang & Seragam', nominal: 1500000 },
-                ],
-                'Tahun 2025': [
-                    { tgl: '24 Mei 2025', kode: 'TRX-052', uraian: 'SPP Bulan Mei 2025',   nominal: 250000 },
-                    { tgl: '23 Apr 2025', kode: 'TRX-041', uraian: 'SPP Bulan April 2025', nominal: 250000 },
-                ],
-            },
+            tahun: @json($tahunTransaksiTerpilih ?? ''),
+            data: @json($transaksiTahunan ?? []),
 
             get transaksi() { return this.data[this.tahun] || []; },
             get total()     { return this.transaksi.reduce((a, t) => a + t.nominal, 0); },
@@ -319,11 +306,11 @@
             unduh(t) {
                 const isi = [
                     'KUITANSI PEMBAYARAN',
-                    "Yayasan Pendidikan Nurun 'Alannur - SMK Nusantara",
+                    @json($namaYayasan ?? '-') + ' - ' + @json($namaSekolah ?? '-'),
                     '------------------------------------------',
                     'No. Referensi : ' + t.kode,
                     'Tanggal       : ' + t.tgl,
-                    'Diterima dari : Ahmad Fauzi (NIS: 20261001)',
+                    'Diterima dari : ' + @json($siswa->nama ?? '-') + ' (NIS: ' + @json($siswa->nis ?? '-') + ')',
                     'Untuk         : ' + t.uraian,
                     'Jumlah        : Rp ' + this.rp(t.nominal) + ',-',
                     'Status        : Lunas',

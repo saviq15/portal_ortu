@@ -5,7 +5,7 @@
 @section('page_title_class', 'text-base text-slate-900')
 @section('page_data', 'waliPage()')
 @section('escape_action', 'sidebar = false; modal = false')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex')
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-xs text-slate-900')
@@ -26,16 +26,16 @@
             <section class="flex flex-col gap-4 rounded-xl bg-white px-6 py-5 shadow-sm ring-1 ring-slate-200 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-4">
                     <div class="relative shrink-0">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-200 bg-red-50 text-lg text-brand">AF</div>
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-200 bg-red-50 text-lg text-brand">{{ $siswa->inisial ?? '-' }}</div>
                         <span class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500"></span>
                     </div>
                     <div>
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="text-[11px] uppercase tracking-wider text-slate-400">Memantau</span>
-                            <span class="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] text-amber-700">Siswa Aktif</span>
+                            <span @class(['rounded border px-2 py-0.5 text-[11px]', 'border-amber-200 bg-amber-50 text-amber-700' => ($siswa->status ?? '') === 'Aktif', 'border-slate-200 bg-slate-50 text-slate-600' => ($siswa->status ?? '') !== 'Aktif'])>{{ $siswa->status ?? '-' }}</span>
                         </div>
-                        <h1 class="mt-0.5 text-xl text-slate-900">Ahmad Fauzi</h1>
-                        <p class="mt-0.5 text-[11px] text-slate-500">NIS: 20261001 &bull; Kelas X TKJ 1 - <span class="text-brand">SMK Nusantara</span></p>
+                        <h1 class="mt-0.5 text-xl text-slate-900">{{ $siswa->nama ?? '-' }}</h1>
+                        <p class="mt-0.5 text-[11px] text-slate-500">NIS: {{ $siswa->nis ?? '-' }} &bull; Kelas {{ $siswa->kelas ?? '-' }} - <span class="text-brand">{{ $siswa->sekolah ?? '-' }}</span></p>
                     </div>
                 </div>
 
@@ -44,7 +44,7 @@
                     <svg class="h-4 w-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
                     <span class="leading-tight">
                         <span class="block text-[11px] text-sky-700">Wali Kelas</span>
-                        <span class="block text-xs text-slate-900">Bapak Heri Susanto</span>
+                        <span class="block text-xs text-slate-900">Bapak {{ $waliKelas->nama ?? '-' }}</span>
                     </span>
                 </button>
             </section>
@@ -56,17 +56,17 @@
                 <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
                     <div class="flex items-start justify-between">
                         <p class="text-[11px] uppercase tracking-wider text-slate-500">Kehadiran Siswa</p>
-                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                        <span @class(['flex h-8 w-8 items-center justify-center rounded-lg', 'bg-emerald-50 text-emerald-600' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'bg-red-50 text-red-600' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </span>
                     </div>
                     <div class="mt-4 flex flex-wrap items-center gap-3">
-                        <p class="text-[32px] leading-none text-emerald-600">98%</p>
-                        <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] text-emerald-700">Sangat Disiplin</span>
+                        <p class="text-[32px] leading-none text-emerald-600">{{ $persentaseKehadiran ?? 0 }}%</p>
+                        <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] text-emerald-700">{{ $labelDisiplin ?? '-' }}</span>
                     </div>
-                    <p class="mt-4 text-xs text-slate-600">Hadir: 45 &bull; Sakit/Izin: 1</p>
+                    <p class="mt-4 text-xs text-slate-600">Hadir: {{ $jumlahHadir ?? 0 }} &bull; Sakit/Izin: {{ $jumlahSakitIzin ?? 0 }}</p>
                     <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                        <div class="h-full w-[98%] rounded-full bg-emerald-500"></div>
+                        <div class="h-full rounded-full bg-emerald-500" style="width: {{ $persentaseKehadiran ?? 0 }}%"></div>
                     </div>
                 </div>
 
@@ -79,13 +79,13 @@
                         </span>
                     </div>
                     <div class="mt-4 flex flex-wrap items-center gap-3">
-                        <p class="text-[32px] leading-none text-emerald-600">Lunas</p>
-                        <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] text-emerald-700">Terverifikasi TU</span>
+                        <p @class(['text-[32px] leading-none', 'text-emerald-600' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'text-red-600' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>{{ $ringkasanKeuangan->statusSpp ?? '-' }}</p>
+                        <span @class(['rounded-full px-2.5 py-1 text-[11px]', 'bg-emerald-50 text-emerald-700' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'bg-red-50 text-red-700' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS'])>{{ $ringkasanKeuangan->statusVerifikasi ?? '-' }}</span>
                     </div>
-                    <p class="mt-4 text-xs text-slate-600">Bulan Oktober 2026</p>
+                    <p class="mt-4 text-xs text-slate-600">Bulan {{ $ringkasanKeuangan->periodeSpp ?? '-' }}</p>
                     <p class="mt-3 flex items-center gap-2 text-xs text-slate-400">
-                        <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                        Tidak ada tunggakan berjalan
+                        <svg @class(['h-3.5 w-3.5', 'text-emerald-500' => ($ringkasanKeuangan->statusSpp ?? '') === 'LUNAS', 'text-red-500' => ($ringkasanKeuangan->statusSpp ?? '') !== 'LUNAS']) fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                        {{ $ringkasanKeuangan->pesanStatusSpp ?? '-' }}
                     </p>
                 </div>
 
@@ -98,13 +98,13 @@
                         </span>
                     </div>
                     <div class="mt-4 flex flex-wrap items-center gap-3">
-                        <p class="text-[32px] leading-none text-slate-900">Aman</p>
-                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] text-slate-700">Kondusif</span>
+                        <p class="text-[32px] leading-none text-slate-900">{{ $peringatanAkademik->status ?? '-' }}</p>
+                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] text-slate-700">{{ $peringatanAkademik->label ?? '-' }}</span>
                     </div>
-                    <p class="mt-4 text-xs text-slate-600">Tidak ada catatan pelanggaran</p>
+                    <p class="mt-4 text-xs text-slate-600">{{ $peringatanAkademik->keterangan ?? '-' }}</p>
                     <p class="mt-3 flex items-center gap-2 text-xs text-slate-400">
                         <svg class="h-3.5 w-3.5 text-sky-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
-                        Pantauan BK &amp; Ketertiban Siswa
+                        {{ $peringatanAkademik->sumberPantauan ?? '-' }}
                     </p>
                 </div>
             </section>
@@ -160,8 +160,8 @@
                             <p class="flex items-center gap-2 text-[11px] uppercase tracking-wider text-amber-700">
                                 <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Agenda Akademik
                             </p>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-900">Penilaian Tengah Semester (PTS) akan dilaksanakan mulai 15 November 2026.</p>
-                            <p class="mt-2 text-[11px] leading-relaxed text-amber-700">Mohon bimbingan pendampingan belajar di rumah.</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-900">{{ $agendaAkademik ?? '-' }}</p>
+                            <p class="mt-2 text-[11px] leading-relaxed text-amber-700">{{ $pesanPendampingan ?? '-' }}</p>
                         </div>
 
                         {{-- Undangan pertemuan --}}
@@ -169,18 +169,18 @@
                             <p class="flex items-center gap-2 text-[11px] uppercase tracking-wider text-sky-700">
                                 <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span>Undangan Pertemuan
                             </p>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-900">Rapat Wali Murid dan pengambilan Rapor Sisipan dijadwalkan 1 Desember 2026.</p>
-                            <p class="mt-2 text-[11px] leading-relaxed text-sky-700">Waktu &amp; ruang kelas akan dikonfirmasi wali kelas.</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-900">{{ $undanganPertemuan ?? '-' }}</p>
+                            <p class="mt-2 text-[11px] leading-relaxed text-sky-700">{{ $informasiPertemuan ?? '-' }}</p>
                         </div>
                     </div>
 
                     {{-- Kartu kontak wali kelas --}}
                     <div class="mt-8 flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/60 px-4 py-3">
                         <div class="flex items-center gap-3">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[11px] text-white">HS</span>
+                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[11px] text-white">{{ $waliKelas->inisial ?? '-' }}</span>
                             <div class="leading-tight">
-                                <p class="text-xs text-slate-900">Bapak Heri Susanto</p>
-                                <p class="mt-0.5 text-[10px] text-slate-500">Wali Kelas X TKJ 1</p>
+                                <p class="text-xs text-slate-900">Bapak {{ $waliKelas->nama ?? '-' }}</p>
+                                <p class="mt-0.5 text-[10px] text-slate-500">Wali Kelas {{ $waliKelas->kelas ?? '-' }}</p>
                             </div>
                         </div>
                         <button type="button" @click="modal = true"
@@ -193,9 +193,9 @@
             <div class="flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Data pemantauan terintegrasi secara terpusat Yayasan Nurun 'Alannur.
+                    Data pemantauan terintegrasi secara terpusat {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -230,16 +230,16 @@
 
         <div class="px-6 py-5">
             <div class="flex items-center gap-3">
-                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 text-xs text-white">HS</span>
+                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 text-xs text-white">{{ $waliKelas->inisial ?? '-' }}</span>
                 <div class="leading-tight">
-                    <p class="text-sm text-slate-900">Bapak Heri Susanto</p>
-                    <p class="mt-0.5 text-xs text-slate-500">Wali Kelas X TKJ 1 - SMK Nusantara</p>
+                    <p class="text-sm text-slate-900">Bapak {{ $waliKelas->nama ?? '-' }}</p>
+                    <p class="mt-0.5 text-xs text-slate-500">Wali Kelas {{ $waliKelas->kelas ?? '-' }} - {{ $siswa->sekolah ?? '-' }}</p>
                 </div>
             </div>
             <dl class="mt-5 space-y-3 text-sm">
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">WhatsApp</dt><dd class="text-slate-900">0812-3456-7890</dd></div>
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Email</dt><dd class="text-slate-900">heri.susanto@smknusantara.sch.id</dd></div>
-                <div class="flex justify-between gap-4"><dt class="text-slate-500">Jam konsultasi</dt><dd class="text-slate-900">Senin-Jumat, 08.00-14.00</dd></div>
+                <div class="flex justify-between gap-4"><dt class="text-slate-500">WhatsApp</dt><dd class="text-slate-900">{{ $waliKelas->telepon ?? '-' }}</dd></div>
+                <div class="flex justify-between gap-4"><dt class="text-slate-500">Email</dt><dd class="text-slate-900">{{ $waliKelas->email ?? '-' }}</dd></div>
+                <div class="flex justify-between gap-4"><dt class="text-slate-500">Jam konsultasi</dt><dd class="text-slate-900">{{ $waliKelas->jamKonsultasi ?? '-' }}</dd></div>
             </dl>
         </div>
 
@@ -262,42 +262,7 @@
             sidebar: false,
             modal: false,
 
-            // Data dummy (frontend saja)
-            aktivitas: [
-                {
-                    waktu: '25 Okt 2026 • 09:15 WIB',
-                    tag: { teks: 'Keuangan', kelas: 'border border-amber-200 bg-amber-50 text-amber-800' },
-                    ikon: {
-                        wadah: 'border-amber-200 bg-amber-50 text-amber-600',
-                        svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>',
-                    },
-                    isi: 'Pembayaran SPP Bulan Oktober sebesar Rp 250.000 telah dikonfirmasi.',
-                    detail: 'Status: Terverifikasi oleh Staf TU (Ibu Nur Fina) via Kwitansi #TRX-001',
-                    lencana: { teks: 'Lunas', kelas: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-                },
-                {
-                    waktu: '24 Okt 2026 • 14:30 WIB',
-                    tag: { teks: 'Akademik', kelas: 'bg-brand text-white' },
-                    ikon: {
-                        wadah: 'border-red-200 bg-red-50 text-brand',
-                        svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>',
-                    },
-                    isi: 'Nilai Dasar Jaringan <span class="text-emerald-600">(Tuntas: 85)</span> telah diunggah oleh Bapak Heri Susanto.',
-                    detail: 'Kompetensi: Konfigurasi LAN & Perangkat Jaringan Dasar',
-                    lencana: { teks: 'Nilai: 85 /\n100', kelas: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-                },
-                {
-                    waktu: '20 Okt 2026 • 11:00 WIB',
-                    tag: { teks: 'Karakter', kelas: 'bg-blue-600 text-white' },
-                    ikon: {
-                        wadah: 'border-blue-200 bg-blue-50 text-blue-600',
-                        svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z"/>',
-                    },
-                    isi: 'Mendapatkan predikat <span class="text-blue-600">\'Sangat Baik\'</span> pada observasi dimensi Bergotong Royong.',
-                    detail: 'Kegiatan: Proyek P5 - Kolaborasi Rekayasa Teknologi Terapan',
-                    lencana: { teks: 'Sangat\nBaik', kelas: 'border-blue-200 bg-blue-50 text-blue-700' },
-                },
-            ],
+            aktivitas: @json($aktivitas ?? []),
         }));
     });
 </script>

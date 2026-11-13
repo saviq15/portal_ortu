@@ -5,7 +5,7 @@
 @section('page_title_class', 'text-base text-slate-900')
 @section('page_data', 'raporPage()')
 @section('escape_action', 'sidebar = false')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex')
 @section('profile_badge_class', 'flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white')
 @section('profile_name_class', 'text-xs text-slate-900')
@@ -31,7 +31,7 @@ view === 'rapor'
             <div class="flex flex-col gap-4 border-b border-slate-200 pb-3 md:flex-row md:items-start md:justify-between">
                 <div>
                     <h1 class="text-2xl tracking-tight text-slate-900">Laporan Hasil Belajar (Rapor)</h1>
-                    <p class="mt-2 text-sm text-slate-500">Melihat riwayat nilai akademik Ahmad Fauzi.</p>
+                    <p class="mt-2 text-sm text-slate-500">Melihat riwayat nilai akademik {{ $siswa->nama ?? '-' }}.</p>
                 </div>
 
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -57,19 +57,19 @@ view === 'rapor'
             <section class="mt-6 grid grid-cols-1 gap-y-5 rounded-xl bg-white px-6 py-5 shadow-sm ring-1 ring-slate-200 sm:grid-cols-2 lg:grid-cols-4 lg:gap-y-0">
                 <div class="lg:pr-6">
                     <p class="text-[10px] uppercase tracking-wider text-slate-500">Nama Siswa</p>
-                    <p class="mt-2 text-base text-slate-900">Ahmad Fauzi</p>
+                    <p class="mt-2 text-base text-slate-900">{{ $siswa->nama ?? '-' }}</p>
                 </div>
                 <div class="lg:border-l lg:border-slate-200 lg:px-6">
                     <p class="text-[10px] uppercase tracking-wider text-slate-500">NIS / NISN</p>
-                    <p class="mt-2 text-sm text-slate-900">20261001 / 0081234567</p>
+                    <p class="mt-2 text-sm text-slate-900">{{ $siswa->nis ?? '-' }} / {{ $siswa->nisn ?? '-' }}</p>
                 </div>
                 <div class="lg:border-l lg:border-slate-200 lg:px-6">
                     <p class="text-[10px] uppercase tracking-wider text-slate-500">Kelas</p>
-                    <p class="mt-2 text-sm text-slate-900">X TKJ 1 <span class="text-xs text-slate-500">(SMK Nusantara)</span></p>
+                    <p class="mt-2 text-sm text-slate-900">{{ $siswa->kelas ?? '-' }} <span class="text-xs text-slate-500">({{ $siswa->sekolah ?? '-' }})</span></p>
                 </div>
                 <div class="lg:border-l lg:border-slate-200 lg:pl-6">
                     <p class="text-[10px] uppercase tracking-wider text-slate-500">Wali Kelas</p>
-                    <p class="mt-2 text-sm text-brand">Bapak Heri Susanto</p>
+                    <p class="mt-2 text-sm text-brand">Bapak {{ $waliKelas->nama ?? '-' }}</p>
                 </div>
             </section>
 
@@ -120,7 +120,7 @@ view === 'rapor'
                         <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Dokumen ini diterbitkan secara otomatis oleh sistem. Jika terdapat kekeliruan, harap hubungi Wali Kelas.
                     </p>
-                    <p class="text-[11px] text-slate-400">SIAKAD Digital Report v2.4</p>
+                    <p class="text-[11px] text-slate-400">SIAKAD Digital Report v{{ $versi ?? '-' }}</p>
                 </div>
             </section>
 
@@ -128,9 +128,9 @@ view === 'rapor'
             <div class="mt-6 flex flex-col gap-2 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Rapor Digital Terintegrasi Yayasan Nurun 'Alannur (MI &amp; SMK)
+                    Sistem Rapor Digital Terintegrasi {{ $namaYayasan ?? '-' }} ({{ $unitPendidikan ?? '-' }})
                 </p>
-                <span>Terakhir disinkronkan: Hari ini, 10:00 WIB</span>
+                <span>Terakhir disinkronkan: {{ $waktuSinkronisasi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -174,33 +174,33 @@ view === 'rapor'
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-full w-full object-contain p-1">
                     </div>
                     <div class="flex-1 text-center">
-                        <h2 class="text-xl uppercase tracking-wide text-slate-900 sm:text-2xl">Yayasan Pendidikan Nurun 'Alannur</h2>
-                        <p class="mt-1 text-lg uppercase text-slate-900">SMK Nusantara</p>
-                        <p class="mt-1 text-[11px] text-slate-700">Kapencar RT. 10 RW. 09, Kecamatan Kertek, Kabupaten Wonosobo, Jawa Tengah 56371</p>
+                        <h2 class="text-xl uppercase tracking-wide text-slate-900 sm:text-2xl">{{ $namaYayasan ?? '-' }}</h2>
+                        <p class="mt-1 text-lg uppercase text-slate-900">{{ $namaSekolah ?? '-' }}</p>
+                        <p class="mt-1 text-[11px] text-slate-700">{{ $alamatSekolah ?? '-' }}</p>
                     </div>
                     <div class="hidden shrink-0 border border-slate-900 px-5 py-1 text-center text-slate-900 sm:block">
                         <p class="text-[9px] uppercase tracking-wider">Akreditasi</p>
-                        <p class="text-sm">A</p>
+                        <p class="text-sm">{{ $akreditasiSekolah ?? '-' }}</p>
                     </div>
                 </div>
 
                 {{-- Judul --}}
                 <div class="mt-8 text-center">
                     <h3 class="text-xl uppercase tracking-wide text-slate-900 underline underline-offset-4">Laporan Hasil Belajar (Rapor)</h3>
-                    <p class="mt-2 text-[11px] uppercase tracking-wider text-slate-600">Kurikulum Merdeka — Jenjang Sekolah Menengah Kejuruan</p>
+                    <p class="mt-2 text-[11px] uppercase tracking-wider text-slate-600">{{ $kurikulum ?? '-' }} — Jenjang {{ $jenjangSekolah ?? '-' }}</p>
                 </div>
 
                 {{-- Identitas --}}
                 <div class="mt-8 grid grid-cols-1 gap-x-10 gap-y-2 border-b border-slate-200 pb-5 text-sm text-slate-900 md:grid-cols-2">
                     <dl class="space-y-2">
-                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">Nama Peserta Didik</dt><dd>: AHMAD FAUZI</dd></div>
-                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">NIS / NISN</dt><dd>: 20261001 / 0081234567</dd></div>
-                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">Kelas</dt><dd>: X TKJ 1 (Teknik Komputer &amp; Jaringan)</dd></div>
+                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">Nama Peserta Didik</dt><dd>: {{ $siswa->nama ?? '-' }}</dd></div>
+                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">NIS / NISN</dt><dd>: {{ $siswa->nis ?? '-' }} / {{ $siswa->nisn ?? '-' }}</dd></div>
+                        <div class="grid grid-cols-[130px_1fr] gap-1"><dt class="text-slate-600">Kelas</dt><dd>: {{ $siswa->kelas ?? '-' }} ({{ $programKeahlian ?? '-' }})</dd></div>
                     </dl>
                     <dl class="space-y-2">
                         <div class="grid grid-cols-[110px_1fr] gap-1"><dt class="text-slate-600">Semester</dt><dd>: <span x-text="semesterNama"></span></dd></div>
                         <div class="grid grid-cols-[110px_1fr] gap-1"><dt class="text-slate-600">Tahun Ajaran</dt><dd>: <span x-text="tahunAjaran"></span></dd></div>
-                        <div class="grid grid-cols-[110px_1fr] gap-1"><dt class="text-slate-600">Wali Kelas</dt><dd>: Bapak Heri Susanto</dd></div>
+                        <div class="grid grid-cols-[110px_1fr] gap-1"><dt class="text-slate-600">Wali Kelas</dt><dd>: Bapak {{ $waliKelas->nama ?? '-' }}</dd></div>
                     </dl>
                 </div>
 
@@ -250,27 +250,27 @@ view === 'rapor'
                         <p>Mengetahui,</p>
                         <p class="mt-2">Orang Tua / Wali</p>
                         <p class="my-6 text-[11px] text-slate-300">[ Tanda Tangan ]</p>
-                        <p class="underline">( BAPAK MAHMUD )</p>
+                        <p class="underline">( {{ $profilWali->nama ?? '-' }} )</p>
                     </div>
                     <div>
                         <p>Mengetahui,</p>
                         <p class="mt-2">Kepala Sekolah</p>
                         <p class="my-6 text-[11px] text-slate-300">[ Stempel &amp; TTD ]</p>
-                        <p class="underline">( ..................................... )</p>
-                        <p class="mt-1 text-[11px] text-slate-600">NIP. 19780512 200312 1 002</p>
+                        <p class="underline">( {{ $kepalaSekolah->nama ?? '-' }} )</p>
+                        <p class="mt-1 text-[11px] text-slate-600">NIP. {{ $kepalaSekolah->nip ?? '-' }}</p>
                     </div>
                     <div>
-                        <p x-text="'Wonosobo, ' + dicetak.tanggal"></p>
+                        <p x-text='@json($lokasiSekolah ?? "-") + ", " + dicetak.tanggal'></p>
                         <p class="mt-2">Wali Kelas</p>
                         <p class="my-6 text-[11px] text-slate-300">[ Tanda Tangan ]</p>
-                        <p class="underline">( BAPAK HERI SUSANTO )</p>
-                        <p class="mt-1 text-[11px] text-slate-600">NIP. 19850314 201101 1 009</p>
+                        <p class="underline">( Bapak {{ $waliKelas->nama ?? '-' }} )</p>
+                        <p class="mt-1 text-[11px] text-slate-600">NIP. {{ $waliKelas->nip ?? '-' }}</p>
                     </div>
                 </div>
 
                 {{-- Footer dokumen --}}
                 <div class="mt-10 flex flex-col gap-1 border-t border-slate-300 pt-3 text-[10px] text-slate-500 sm:flex-row sm:justify-between">
-                    <p>Dokumen Resmi SIAKAD v2.4.0 — Yayasan Pendidikan Nurun 'Alannur</p>
+                    <p>Dokumen Resmi SIAKAD v{{ $versi ?? '-' }} — {{ $namaYayasan ?? '-' }}</p>
                     <p x-text="'Dicetak otomatis melalui Portal Wali Murid • ' + dicetak.tanggal"></p>
                 </div>
             </div>
@@ -283,7 +283,7 @@ view === 'rapor'
                 <kbd class="rounded border border-slate-300 bg-white px-2 py-0.5 text-[11px] text-slate-700">Ctrl + P</kbd>
                 untuk mencetak atau mengekspor berkas ke PDF.
             </p>
-            <p>Sistem Penilaian Akademik Terpadu (SMK Nusantara &amp; MI Internasional)</p>
+            <p>Sistem Penilaian Akademik Terpadu ({{ $unitPendidikan ?? '-' }})</p>
         </div>
     </div>
 </div>
@@ -308,25 +308,11 @@ view === 'rapor'
             sidebar: false,
             view: 'rapor',   // 'rapor' (foto 1) | 'cetak' (foto 2)
 
-            semester: 'Ganjil 2026/2027',
-            daftarSemester: ['Ganjil 2026/2027', 'Genap 2025/2026'],
+            semester: @json($semesterTerpilih ?? ''),
+            daftarSemester: @json($semesterOptions ?? []),
             dicetak: { tanggal: '' },
 
-            // Data dummy (frontend saja)
-            data: {
-                'Ganjil 2026/2027': [
-                    { mapel: 'Dasar Jaringan',          titik: 'bg-emerald-500', kkm: 75, nilai: 85, deskripsi: 'Ananda Ahmad Fauzi menunjukkan pemahaman yang baik dalam topologi jaringan dasar.' },
-                    { mapel: 'Matematika',              titik: 'bg-amber-500',   kkm: 70, nilai: 78, deskripsi: 'Pemahaman logika dasar sudah cukup, perlu peningkatan dalam soal cerita kompleks.' },
-                    { mapel: 'Bahasa Indonesia',        titik: 'bg-blue-500',    kkm: 75, nilai: 90, deskripsi: 'Sangat aktif berdiskusi dan mampu menulis laporan praktikum dengan struktur yang tepat.' },
-                    { mapel: 'Pendidikan Agama Islam',  titik: 'bg-emerald-500', kkm: 80, nilai: 88, deskripsi: 'Mampu menghafal surat pendek dengan tajwid yang benar.' },
-                ],
-                'Genap 2025/2026': [
-                    { mapel: 'Dasar Jaringan',          titik: 'bg-emerald-500', kkm: 75, nilai: 80, deskripsi: 'Mulai memahami konsep model OSI dan perangkat jaringan dasar.' },
-                    { mapel: 'Matematika',              titik: 'bg-amber-500',   kkm: 70, nilai: 72, deskripsi: 'Perlu latihan tambahan pada materi persamaan dan fungsi.' },
-                    { mapel: 'Bahasa Indonesia',        titik: 'bg-blue-500',    kkm: 75, nilai: 86, deskripsi: 'Aktif dalam diskusi kelompok dan mampu menyusun teks prosedur.' },
-                    { mapel: 'Pendidikan Agama Islam',  titik: 'bg-emerald-500', kkm: 80, nilai: 91, deskripsi: 'Sangat baik dalam hafalan dan praktik ibadah harian.' },
-                ],
-            },
+            data: @json($nilaiRapor ?? []),
 
             get nilai()        { return this.data[this.semester] || []; },
             get semesterNama() { return this.semester.split(' ')[0]; },

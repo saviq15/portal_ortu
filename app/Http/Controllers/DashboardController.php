@@ -26,22 +26,12 @@ class DashboardController extends Controller
         // 3. Statistik Utama (Riil dari Database)
         $totalUnit  = Unit::count();
         $totalStaf = Staf::count();
-        $stafNames = Staf::query()->pluck('nama_staf');
-        $stafNameKeys = $stafNames
-            ->map(fn ($name) => mb_strtolower(trim($name)))
-            ->all();
-        $users = User::query()
+        $usersTidakTerhubung = User::query()
             ->whereIn('role', ['guru', 'wali_kelas'])
-            ->get(['name', 'role']);
-        $usersTidakCocokPerRole = ['guru' => 0, 'wali_kelas' => 0];
+            ->whereDoesntHave('staf')
+            ->count();
 
-        foreach ($users as $account) {
-            if (!in_array(mb_strtolower(trim($account->name)), $stafNameKeys, true)) {
-                $usersTidakCocokPerRole[$account->role]++;
-            }
-        }
-
-        $totalPendidikStaf = $totalStaf + array_sum($usersTidakCocokPerRole);
+        $totalPendidikStaf = $totalStaf + $usersTidakTerhubung;
         $totalSiswa = Siswa::count(); 
 
         // Classify students from the existing free-text class field.

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateKelasRequest extends FormRequest
 {
@@ -23,10 +24,36 @@ class UpdateKelasRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_kelas' => ['required', 'string', 'max:50'],
-            'tingkat' => ['required', 'string', 'max:10'],
-            'jurusan' => ['nullable', 'string', 'max:255'],
-            'tahun_ajaran' => ['required', 'string', 'max:20'],
+            'unit' => ['required', Rule::in(['mi', 'smk'])],
+            'nama_kelas' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('kelas', 'nama_kelas')->ignore($this->route('kela')),
+            ],
+            'wali_kelas_id' => [
+                'required',
+                Rule::exists('users', 'id')->where(fn ($query) => $query->where('role', 'wali_kelas')),
+            ],
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'unit.required' => 'Unit pendidikan wajib dipilih.',
+            'unit.in' => 'Unit pendidikan yang dipilih tidak valid.',
+            'nama_kelas.required' => 'Nama kelas wajib diisi.',
+            'nama_kelas.unique' => 'Nama kelas sudah digunakan.',
+            'wali_kelas_id.required' => 'Wali kelas wajib dipilih.',
+            'wali_kelas_id.exists' => 'Wali kelas harus berasal dari akun dengan peran Wali Kelas.',
+        ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'nama_kelas' => trim((string) $this->input('nama_kelas', '')),
+        ]);
     }
 }

@@ -5,7 +5,7 @@
 @section('page_title_class', 'text-base text-slate-900')
 @section('page_data', 'profilPage()')
 @section('escape_action', 'sidebar = false')
-@section('year_label', 'Tahun Ajaran 2026/2027')
+@section('year_label', 'Tahun Ajaran ' . ($tahunAjaran ?? '-'))
 @section('year_badge_class', 'hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 sm:inline-flex')
 @section('profile_badge_class', 'flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[11px] font-medium text-white')
 @section('profile_name_class', 'text-xs text-slate-900')
@@ -42,19 +42,19 @@
                         </h3>
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] text-emerald-700">
                             <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-                            Akun Terverifikasi
+                            {{ $statusVerifikasiAkun ?? '-' }}
                         </span>
                     </div>
 
                     {{-- Kartu identitas --}}
                     <div class="mt-5 flex items-center gap-4 rounded-lg border border-slate-100 bg-slate-50/70 px-5 py-4">
-                        <div class="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">BM</div>
+                        <div class="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">{{ $profilWali->inisial ?? '-' }}</div>
                         <div>
-                            <p class="text-lg leading-7 text-slate-900">Bapak Mahmud</p>
+                            <p class="text-lg leading-7 text-slate-900">{{ $profilWali->nama ?? '-' }}</p>
                             <p class="text-xs text-slate-600">Orang Tua / Wali Siswa</p>
                             <span class="mt-1.5 inline-flex items-center gap-1.5 rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-[11px] text-amber-800">
                                 <svg class="h-3 w-3 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
-                                Wali dari: Ahmad Fauzi (X TKJ 1)
+                                Wali dari: {{ $siswa->nama ?? '-' }} ({{ $siswa->kelas ?? '-' }})
                             </span>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                         {{-- Hubungan (terkunci) --}}
                         <div>
                             <label for="hubungan" class="mb-1.5 block text-xs text-slate-600">Hubungan dengan Siswa</label>
-                            <input id="hubungan" name="hubungan" type="text" value="Ayah Kandung" readonly
+                            <input id="hubungan" name="hubungan" type="text" value="{{ $profilWali->hubungan ?? '-' }}" readonly
                                    class="block h-[38px] w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3.5 text-sm text-slate-600 focus:outline-none">
                         </div>
 
@@ -167,7 +167,7 @@
                         {{-- Tips keamanan --}}
                         <div class="!mt-5 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50/70 px-4 py-3.5 text-xs leading-relaxed text-amber-900">
                             <svg class="mt-0.5 h-[18px] w-[18px] shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-                            <p class="max-w-[345px]">Tips Keamanan: Jangan berikan kata sandi Anda kepada siapa pun termasuk staf sekolah. Kata sandi yang kuat membantu menjaga privasi data akademik dan administrasi ananda Ahmad Fauzi.</p>
+                            <p class="max-w-[345px]">Tips Keamanan: Jangan berikan kata sandi Anda kepada siapa pun termasuk staf sekolah. Kata sandi yang kuat membantu menjaga privasi data akademik dan administrasi ananda {{ $siswa->nama ?? '-' }}.</p>
                         </div>
                     </div>
 
@@ -185,9 +185,9 @@
             <div class="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Otentikasi &amp; Keamanan Portal Terpadu Yayasan Nurun 'Alannur (MI &amp; SMK)
+                    Sistem Otentikasi &amp; Keamanan Portal Terpadu {{ $namaYayasan ?? '-' }} ({{ $unitPendidikan ?? '-' }})
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -210,14 +210,7 @@
             pesan: '',
             toastTimer: null,
 
-            // Data dummy (frontend saja)
-            profil: {
-                nama: 'Bapak Mahmud',
-                email: 'mahmud.ortu@email.com',
-                telepon: '081298765432',
-                alamat: 'Jl. Merdeka No. 45, Banyumas',
-                diperbarui: '25 Oktober 2026',
-            },
+            profil: @json($profilWali ?? []),
             sandi: { lama: '', baru: '', konfirmasi: '' },
             lihat: { lama: false, konfirmasi: false },
 

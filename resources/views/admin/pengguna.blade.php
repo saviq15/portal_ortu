@@ -5,7 +5,7 @@
 @section('page_data', 'penggunaPage()')
 @section('escape_action', 'modal = false; sidebar = false')
 @section('year_label')
-Tahun Ajaran {{ $tahunAjaran }}
+Tahun Ajaran {{ $tahunAjaran ?? '-' }}
 @endsection
 
 @section('content')
@@ -31,7 +31,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                     <select x-model="filterPeran"
                             class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-3 pr-9 text-sm text-slate-700 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                         <option value="">-- Semua Peran --</option>
-                        @foreach($roles as $role)
+                        @foreach(($roles ?? []) as $role)
                             <option value="{{ $role }}">{{ $role }}</option>
                         @endforeach
                     </select>
@@ -103,10 +103,10 @@ Tahun Ajaran {{ $tahunAjaran }}
 
                 {{-- Footer tabel --}}
                 <div class="flex flex-col gap-3 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-sm text-slate-500">Menampilkan {{ $users->firstItem() ?? 0 }}-{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} pengguna</p>
+                    <p class="text-sm text-slate-500">Menampilkan {{ isset($users) && is_object($users) && method_exists($users, 'firstItem') ? ($users->firstItem() ?? 0) : 0 }}-{{ isset($users) && is_object($users) && method_exists($users, 'lastItem') ? ($users->lastItem() ?? 0) : 0 }} dari {{ isset($users) && is_object($users) && method_exists($users, 'total') ? $users->total() : 0 }} pengguna</p>
                     <div class="flex items-center gap-2">
-                        <a href="{{ $users->previousPageUrl() ?? '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-500 transition hover:bg-slate-50">Prev</a>
-                        <a href="{{ $users->nextPageUrl() ?? '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50">Next</a>
+                        <a href="{{ isset($users) && is_object($users) && method_exists($users, 'previousPageUrl') ? ($users->previousPageUrl() ?? '#') : '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-500 transition hover:bg-slate-50">Prev</a>
+                        <a href="{{ isset($users) && is_object($users) && method_exists($users, 'nextPageUrl') ? ($users->nextPageUrl() ?? '#') : '#' }}" class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50">Next</a>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                     <svg class="h-3.5 w-3.5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
                     Data terintegrasi secara terpusat untuk Yayasan Nurun 'Alannur (MI Internasional &amp; SMK Nusantara).
                 </p>
-                <span class="text-slate-400">Sistem versi 2.4.0</span>
+                <span class="text-slate-400">Sistem versi {{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -190,8 +190,8 @@ Tahun Ajaran {{ $tahunAjaran }}
                             <select id="unit" name="unit" required x-model="form.unit"
                                     class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-3.5 pr-10 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                                 <option value="">Pilih Unit...</option>
-                                @foreach($units as $unit)
-                                    <option value="{{ $unit->nama_unit }}">{{ $unit->nama_unit }}</option>
+                                @foreach(($units ?? []) as $unit)
+                                    <option value="{{ $unit->nama_unit ?? '' }}">{{ $unit->nama_unit ?? '-' }}</option>
                                 @endforeach
                             </select>
                             <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
@@ -208,7 +208,7 @@ Tahun Ajaran {{ $tahunAjaran }}
                             <select id="peran" name="peran" required x-model="form.peran"
                                     class="block w-full appearance-none rounded-lg border border-slate-200 bg-white py-2.5 pl-3.5 pr-10 text-sm text-slate-800 transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20">
                                 <option value="">Pilih Peran...</option>
-                                @foreach($roles as $role)
+                                @foreach(($roles ?? []) as $role)
                                     <option value="{{ $role }}">{{ $role }}</option>
                                 @endforeach
                             </select>
@@ -247,7 +247,7 @@ document.addEventListener('alpine:init', () => {
             filterPeran: '',
             form: { nama: '', nip: '', unit: '', peran: '' },
 
-            users: @js($userRows),
+            users: @json($userRows ?? []),
 
             get filtered() {
                 const q = this.search.toLowerCase().trim();

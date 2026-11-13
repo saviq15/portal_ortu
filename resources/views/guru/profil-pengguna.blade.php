@@ -22,18 +22,18 @@
 
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <h3 class="text-lg text-slate-900">Data Pribadi</h3>
-                        <span class="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] text-emerald-700">Akun Terverifikasi</span>
+                        <span class="rounded-full border px-2.5 py-0.5 text-[11px] {{ ($statusAkun ?? '') === 'Akun Terverifikasi' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-100 text-slate-600' }}">{{ $statusAkun ?? '-' }}</span>
                     </div>
 
                     {{-- Kartu identitas --}}
                     <div class="mt-6 flex items-center gap-4 rounded-lg border border-slate-100 bg-slate-50/70 px-5 py-4">
-                        <div class="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">HS</div>
+                        <div class="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-slate-200 text-xl text-slate-500 ring-4 ring-white">{{ $guruInitials ?? '-' }}</div>
                         <div>
-                            <p class="text-base text-slate-900">Bapak Heri Susanto</p>
-                            <p class="mt-0.5 text-xs text-slate-600">Guru Kejuruan - SMK Nusantara</p>
+                            <p class="text-base text-slate-900">Bapak {{ $guruName ?? '-' }}</p>
+                            <p class="mt-0.5 text-xs text-slate-600">{{ $guruPosition ?? '-' }}</p>
                             <p class="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
-                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                NUPTK Aktif Kemendikbudristek
+                                <span class="h-1.5 w-1.5 rounded-full {{ ($statusNuptk ?? '') === 'Aktif' ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                                NUPTK {{ $statusNuptk ?? '-' }} Kemendikbudristek
                             </p>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                         <div>
                             <label for="nama" class="mb-2 block text-xs text-slate-700">Nama Lengkap</label>
                             <div class="relative">
-                                <input id="nama" name="nama" type="text" value="Bapak Heri Susanto" readonly
+                                <input id="nama" name="nama" type="text" value="Bapak {{ $guruName ?? '-' }}" readonly
                                        class="block w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 py-3 pl-4 pr-10 text-sm text-slate-700 focus:outline-none">
                                 <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
@@ -57,7 +57,7 @@
                         <div>
                             <label for="nip" class="mb-2 block text-xs text-slate-700">Nomor Induk Pegawai (NIP)</label>
                             <div class="relative">
-                                <input id="nip" name="nip" type="text" value="19850822001" readonly
+                                <input id="nip" name="nip" type="text" value="{{ $guruNip ?? '-' }}" readonly
                                        class="block w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 py-3 pl-4 pr-10 text-sm text-slate-700 focus:outline-none">
                                 <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
@@ -153,9 +153,9 @@
             <div class="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    Sistem Otentikasi dan Keamanan terintegrasi terpusat Yayasan Nurun 'Alannur.
+                    Sistem Otentikasi dan Keamanan terintegrasi terpusat {{ $namaYayasan ?? '-' }}.
                 </p>
-                <span class="text-slate-400">SIAKAD v2.4.0</span>
+                <span class="text-slate-400">SIAKAD v{{ $versi ?? '-' }}</span>
             </div>
         </main>
 @endsection
@@ -178,12 +178,7 @@ document.addEventListener('alpine:init', () => {
             pesan: '',
             toastTimer: null,
 
-            // Data dummy (frontend saja)
-            profil: {
-                email: 'heri.susanto@smknusantara.sch.id',
-                telepon: '081234567890',
-                diperbarui: '15 Oktober 2026',
-            },
+            profil: @json($profilGuru ?? ['email' => '', 'telepon' => '', 'diperbarui' => '-']),
             sandi: { lama: '', baru: '', konfirmasi: '' },
 
             get tidakCocok() {
